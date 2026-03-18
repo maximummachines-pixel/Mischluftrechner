@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1a1aff">
+<meta name="description" content="Mischluftrechner – Psychrometrischer Rechner enthalpiebasiert by MM">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mischluft">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Mischluftrechner – by MM</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fff;--bg2:#f4f4f2;--text:#111;--text2:#555;--text3:#888;--border:rgba(0,0,0,.12);--border2:rgba(0,0,0,.22);--r:10px;--rl:14px}
+@media(prefers-color-scheme:dark){:root{--bg:#1c1c1e;--bg2:#2c2c2e;--text:#f2f2f7;--text2:#aeaeb2;--text3:#636366;--border:rgba(255,255,255,.10);--border2:rgba(255,255,255,.20)}}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.5}
+.app{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.app-header{background:#1a1aff;padding:13px 16px 11px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-title{font-size:19px;font-weight:700;color:#FFE600;letter-spacing:.01em;line-height:1.2}
+.header-sub{font-size:11px;color:rgba(255,255,255,.72);margin-top:2px;font-style:italic}
+.header-logo{background:#FFE600;color:#1a1aff;font-size:14px;font-weight:800;font-style:italic;padding:5px 13px;border-radius:20px;flex-shrink:0}
+.nav-tabs{display:flex;background:#1a1aff;border-top:0.5px solid rgba(255,255,255,.18);overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:62px;z-index:99}
+.nav-tab{flex:1;padding:9px 4px;text-align:center;font-size:11px;cursor:pointer;border:none!important;background:#1a1aff!important;color:#ffffff!important;border-bottom:2.5px solid transparent!important;white-space:nowrap;-webkit-appearance:none;appearance:none;outline:none}
+.nav-tab.active{color:#FFE600!important;font-weight:700;border-bottom:2.5px solid #FFE600!important}
+.page-wrap{padding:12px 10px;flex:1}
+.page{display:none}.page.active{display:block}
+.page-footer{text-align:center;padding:14px 0 6px;margin-top:4px;border-top:0.5px solid var(--border)}
+.page-footer a{font-size:13px;font-weight:700;color:#1a1aff;text-decoration:none}
+@media(prefers-color-scheme:dark){.page-footer a{color:#7a9fff}}
+.card{border-radius:var(--rl);padding:14px;margin-bottom:10px}
+.card-white{background:var(--bg);border:0.5px solid var(--border)}
+.card-a{background:#D6EAFF;border:0.5px solid #7FBFFF}
+.card-b{background:#FFE8CC;border:0.5px solid #FFAA55}
+.card-green{background:#D6F5E3;border:0.5px solid #7FDCA4}
+.card-gray{background:#1a1aff;border:0.5px solid #0000cc}
+.card-red{background:#FFE5E5;border:0.5px solid #FFB3B3}
+.card-heat{background:#FFF0E6;border:0.5px solid #FF8844}
+.card-cool{background:#E6F4FF;border:0.5px solid #44AAFF}
+.card-neutral{background:#F0F0F0;border:0.5px solid #CCC}
+@media(prefers-color-scheme:dark){
+  .card-a{background:#1a3a5c;border-color:#2a5a8c}.card-b{background:#4a2a00;border-color:#aa6600}
+  .card-green{background:#1a4a2e;border-color:#2a7a4e}.card-gray{background:#0f0fcc;border-color:#0000aa}
+  .card-red{background:#4a1a1a;border-color:#8c2a2a}
+  .card-heat{background:#4a1a00;border-color:#cc5500}
+  .card-cool{background:#001a4a;border-color:#0066cc}
+  .card-neutral{background:#2a2a2a;border-color:#555}
+}
+.badge{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:10px}
+.badge-a{background:#1a6fbb;color:#fff}.badge-b{background:#cc6600;color:#fff}
+.badge-mix{background:#1a7a40;color:#fff}.badge-p{background:#FFE600;color:#1a1aff}.badge-bp{background:#cc1111;color:#fff}
+.badge-heat{background:#cc4400;color:#fff}.badge-cool{background:#0066cc;color:#fff}.badge-neutral{background:#666;color:#fff}
+.field{margin-bottom:10px}.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.unit-s{font-size:10px;color:var(--text3)}
+input[type=number]{width:100%;border-radius:var(--r);padding:9px 11px;font-size:15px;color:var(--text);outline:none;-moz-appearance:textfield;border:0.5px solid var(--border2)}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]:focus{border-color:#1a1aff;box-shadow:0 0 0 2px rgba(26,26,255,.12)}
+.inp-a{background:#EBF5FF;color:#003366}.inp-b{background:#FFF3E0;color:#5c2d00}
+.inp-gray{background:rgba(255,255,255,.92);color:#1a1aff;font-weight:600}.inp-red{background:#FFF0F0;color:#660000}
+@media(prefers-color-scheme:dark){
+  .inp-a{background:#0d2a45;color:#9ecfff;border-color:#2a5a8c}.inp-b{background:#3a1a00;color:#ffcc88;border-color:#aa6600}
+  .inp-gray{background:rgba(255,255,255,.85);color:#1a1aff;border-color:rgba(255,255,255,.4);font-weight:600}.inp-red{background:#45090a;color:#ffb3b3;border-color:#8c2a2a}
+}
+.stream-info{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;padding-top:8px;border-top:0.5px solid rgba(0,0,0,.12)}
+.si{border-radius:var(--r);padding:7px 8px}
+.si-a{background:rgba(26,111,187,.15)}.si-b{background:rgba(204,102,0,.15)}.si-bp{background:rgba(204,17,17,.12)}
+.si .sl{font-size:10px;color:var(--text2);margin-bottom:2px}.si .sv{font-size:13px;font-weight:600}.si .su{font-size:10px;font-weight:400;color:var(--text2)}
+.mode-tabs{display:flex;gap:0;margin-bottom:12px;border-radius:var(--r);overflow:hidden;border:0.5px solid #1a1aff}
+.mode-tab{flex:1;padding:9px 6px;text-align:center;font-size:12px;cursor:pointer;border:none;border-right:0.5px solid #1a1aff;background:transparent;color:#1a1aff;font-weight:500;transition:background .15s}
+.mode-tab:last-child{border-right:none}
+.mode-tab.active{background:#1a1aff;color:#FFE600;font-weight:700}
+.mode-tab:not(.active):hover{background:rgba(26,26,255,.07)}
+@media(prefers-color-scheme:dark){.mode-tab{color:#7a9fff;border-color:#3344aa}.mode-tab.active{background:#1a1aff;color:#FFE600}.mode-tabs{border-color:#3344aa}.mode-tab{border-right-color:#3344aa}}
+/* Luftdruck-card mode-tabs speziell */
+.p-display{background:rgba(255,255,255,.15);border-radius:var(--r);padding:7px 10px;font-size:12px;color:#FFE600;margin-top:5px;display:flex;justify-content:space-between;font-weight:500}
+@media(prefers-color-scheme:dark){.p-display{background:rgba(255,255,255,.12);color:#FFE600}}
+.calc-btn{width:100%;background:#1a1aff;color:#FFE600;border:none;border-radius:var(--r);padding:14px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;transition:opacity .15s}
+.calc-btn:active{opacity:.85}
+.error{background:#FCEBEB;border:0.5px solid #F09595;border-radius:var(--r);padding:10px 12px;font-size:12px;color:#A32D2D;margin-bottom:8px;display:none}
+.metric-h{background:#A8E6C0;border-radius:var(--r);padding:12px 14px;margin-bottom:10px}
+@media(prefers-color-scheme:dark){.metric-h{background:#1a4a30}}
+.metric-h .lbl{font-size:11px;color:#1a5c35;margin-bottom:3px;font-weight:500}
+.metric-h .big{font-size:32px;font-weight:600;color:#0d3320}
+.metric-h .bu{font-size:13px;color:#1a5c35;margin-left:3px}
+.metric-h .form{font-size:10px;color:#2a7a45;margin-top:3px}
+@media(prefers-color-scheme:dark){.metric-h .lbl,.metric-h .bu,.metric-h .form{color:#7fdca4}.metric-h .big{color:#c0f0d0}}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.metric{background:rgba(26,122,64,.15);border-radius:var(--r);padding:10px}
+.metric-g{background:rgba(26,122,64,.15);border-radius:var(--r);padding:10px}
+.metric .lbl{font-size:11px;color:var(--text2);margin-bottom:2px}
+.metric .val{font-size:18px;font-weight:600}.metric .us{font-size:11px;color:var(--text2);font-weight:400}
+.divider{border:none;border-top:0.5px solid rgba(0,0,0,.12);margin:8px 0}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.info-cell{display:flex;justify-content:space-between;padding:4px 6px;border-bottom:0.5px solid rgba(0,0,0,.07);font-size:11px}
+.info-cell:nth-child(odd){border-right:0.5px solid rgba(0,0,0,.07)}
+.ik{color:var(--text2)}.iv{font-weight:600;text-align:right;margin-left:4px}
+.bar-wrap{height:20px;border-radius:4px;overflow:hidden;background:rgba(0,0,0,.1);margin-bottom:3px}
+.bar-fill{height:100%;background:#1a6fbb;color:#fff;display:flex;align-items:center;justify-content:flex-end;padding-right:5px;font-size:10px;font-weight:600;transition:width .4s}
+.bar-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--text2)}
+.warn{font-size:11px;color:#A32D2D;margin-top:6px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.detail-a{background:#D6EAFF;border-radius:var(--rl);padding:10px}
+.detail-b{background:#FFE8CC;border-radius:var(--rl);padding:10px}
+@media(prefers-color-scheme:dark){.detail-a{background:#1a3a5c}.detail-b{background:#4a2a00}}
+.detail-title{font-size:11px;font-weight:600;margin-bottom:6px}
+.dt-a{color:#1a6fbb}.dt-b{color:#cc6600}
+.detail-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:0.5px solid rgba(0,0,0,.07);font-size:11px}
+.detail-row:last-child{border-bottom:none}
+.placeholder{text-align:center;color:var(--text2);font-size:14px;padding:30px 0}
+/* Diagramm */
+canvas{display:block;border-radius:4px;touch-action:none;cursor:grab}
+canvas.panning{cursor:grabbing}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:10px;color:var(--text2)}
+.li{display:flex;align-items:center;gap:3px}.ld{height:2px;width:16px;border-radius:1px}
+.diag-controls{display:flex;gap:6px;margin-top:8px;align-items:center;justify-content:space-between}
+.ctrl-btn{background:var(--bg2);border:0.5px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--text)}
+.ctrl-btn:active{opacity:.7}
+.zoom-info{font-size:11px;color:var(--text2)}
+/* Energiebox */
+.energy-box{border-radius:var(--rl);padding:16px;margin-bottom:10px}
+.energy-title{font-size:11px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.energy-kw{font-size:36px;font-weight:700;line-height:1;margin-bottom:4px}
+.energy-unit{font-size:15px;font-weight:400;margin-left:4px}
+.energy-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.energy-metric{border-radius:8px;padding:9px 10px;background:rgba(0,0,0,.06)}
+@media(prefers-color-scheme:dark){.energy-metric{background:rgba(255,255,255,.06)}}
+.energy-metric .el{font-size:10px;opacity:.7;margin-bottom:2px}
+.energy-metric .ev{font-size:14px;font-weight:600}
+.heat-kw{color:#cc4400}.cool-kw{color:#0066cc}.neutral-kw{color:#444}
+@media(prefers-color-scheme:dark){.heat-kw{color:#ff8855}.cool-kw{color:#55aaff}.neutral-kw{color:#aaa}}
+.formula-box{background:var(--bg2);border-radius:var(--r);padding:10px 12px;font-size:11px;color:var(--text2);line-height:1.7}
+.formula-box .ft{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+
+.card-aul{background:#E8F4FF;border:0.5px solid #6BB5FF}
+.card-abl2{background:#FFE8CC;border:0.5px solid #FFAA55}
+.card-wrg{background:#E8F0FF;border:0.5px solid #7799EE}
+.card-zul2{background:#D6F5E3;border:0.5px solid #7FDCA4}
+@media(prefers-color-scheme:dark){
+  .card-aul{background:#0d2a45;border-color:#2a5a8c}
+  .card-abl2{background:#4a2a00;border-color:#aa6600}
+  .card-wrg{background:#1a1f4a;border-color:#3355aa}
+  .card-zul2{background:#1a4a2e;border-color:#2a7a4e}
+}
+.badge-aul{background:#1a6fbb;color:#fff}
+.badge-abl2{background:#cc6600;color:#fff}
+.badge-wrg{background:#3355bb;color:#fff}
+.badge-zul2{background:#1a7a40;color:#fff}
+.inp-aul{background:#EBF5FF;color:#003366}
+.inp-abl2{background:#FFF3E0;color:#5c2d00}
+.inp-wrg2{background:#EEF2FF;color:#1a2d6b}
+@media(prefers-color-scheme:dark){
+  .inp-aul{background:#0d2a45;color:#9ecfff;border-color:#2a5a8c}
+  .inp-abl2{background:#3a1a00;color:#ffcc88;border-color:#aa6600}
+  .inp-wrg2{background:#1a2040;color:#aabbff;border-color:#3355aa}
+}
+.eta-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.eta-val{font-size:17px;font-weight:700;color:#3355bb;min-width:44px;text-align:right}
+.erp-bar{height:8px;border-radius:4px;background:linear-gradient(to right,#ff4444 0%,#ffaa00 30%,#44aa44 68%,#1a7a40 95%);position:relative;margin:8px 0 4px}
+.erp-marker{position:absolute;top:-3px;width:4px;height:14px;background:#1a1aff;border-radius:2px;transform:translateX(-2px)}
+input[type=range]{width:100%;accent-color:#3355bb}
+.si-aul{background:rgba(26,111,187,.15)}
+.si-abl2{background:rgba(204,102,0,.15)}
+.si-zul2{background:rgba(26,122,64,.15)}
+.calc-btn-wrg{width:100%;background:#3355bb;color:#fff;border:none;border-radius:var(--rl);padding:14px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px}
+.calc-btn-wrg:active{opacity:.85}
+.metric-b2{background:rgba(26,111,187,.15)}
+
+@media(prefers-color-scheme:dark){
+  #modus-wrg:not([style*="1a1aff"]){background:var(--bg)!important;color:#7a9fff!important}
+  #wrg-typ-kvs:not([style*="3355bb"]){background:var(--bg)!important;color:#7a9fff!important}
+}
+
+.ptab{flex:1;padding:9px 4px;text-align:center;font-size:12px;cursor:pointer;border:none;border-right:0.5px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.75);font-weight:500;transition:background .15s}
+.ptab:last-child{border-right:none}
+.ptab.active{background:rgba(255,255,255,.22);color:#FFE600;font-weight:700}
+.ptab:not(.active):hover{background:rgba(255,255,255,.12)}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="app-header">
+  <div>
+    <div class="header-title">Mischluftrechner</div>
+    <div class="header-sub">Psychrometrischer Rechner – enthalpiebasiert</div>
+  </div>
+  <div class="header-logo">by MM</div>
+</header>
+<nav class="nav-tabs">
+  <button class="nav-tab active" onclick="showPage('eingabe',this)">Eingabe</button>
+  <button class="nav-tab" onclick="showPage('ergebnis',this)">Ergebnis</button>
+  <button class="nav-tab" onclick="showPage('betrieb',this)">Betriebspunkt</button>
+  <button class="nav-tab" onclick="showPage('wrg',this)">WRG/FRG</button>
+  <button class="nav-tab" onclick="showPage('diagramm',this)">hx-Diagramm</button>
+</nav>
+<div class="page-wrap">
+
+<!-- ══ EINGABE ══ -->
+<div class="page active" id="page-eingabe">
+
+  <!-- Betriebsmodus-Auswahl -->
+  <div style="display:flex;gap:0;margin-bottom:12px;border-radius:var(--rl);overflow:hidden;border:2px solid #1a1aff">
+    <button id="modus-misch" onclick="setModus('misch')"
+      style="flex:1;padding:11px 6px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;border:none;background:#1a1aff;color:#FFE600">
+      🔀 Mischluft
+    </button>
+    <button id="modus-wrg" onclick="setModus('wrg')"
+      style="flex:1;padding:11px 6px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;border:none;border-left:2px solid #1a1aff;background:#fff;color:#1a1aff">
+      ♻ Lüftungsgerät WRG/FRG
+    </button>
+  </div>
+  <div class="card card-gray">
+    <span class="badge badge-p">Luftdruck</span>
+    <div class="mode-tabs">
+      <button class="ptab active" id="ptab-std" onclick="setPmode('std',this)">Standard</button>
+      <button class="ptab" id="ptab-hoehe" onclick="setPmode('hoehe',this)">Höhe ü.NN</button>
+      <button class="ptab" id="ptab-man" onclick="setPmode('man',this)">Manuell</button>
+    </div>
+    <div id="p-hoehe-inp" style="display:none"><div class="field"><label>Höhe über NN <span class="unit-s">m</span></label><input type="number" class="inp-gray" id="hoehe" value="0" step="10" inputmode="decimal" oninput="updatePfromH()"></div></div>
+    <div id="p-man-inp" style="display:none"><div class="field"><label>Luftdruck <span class="unit-s">Pa</span></label><input type="number" class="inp-gray" id="p-manual" value="101325" step="100" inputmode="decimal" oninput="updatePmanual()"></div></div>
+    <div class="p-display"><span style="color:rgba(255,255,255,.9)">Rechendruck p – <span id="p-methode" style="font-style:italic;color:rgba(255,255,255,.75)">Standard</span></span><span id="p-anzeige"><strong>101.325 Pa</strong></span></div>
+  </div>
+  <div class="mode-tabs">
+    <button class="mode-tab active" onclick="switchMode('feucht',this)">Feuchtegehalt x (g/kg)</button>
+    <button class="mode-tab" onclick="switchMode('rh',this)">Rel. Feuchte φ (%)</button>
+  </div>
+  <div class="card card-a">
+    <span class="badge badge-a">Luftstrom A</span>
+    <div class="field-row">
+      <div class="field"><label>Volumenstrom <span class="unit-s">m³/h</span></label><input type="number" class="inp-a" id="v1" value="1000" step="10" min="0" inputmode="decimal" oninput="updateStreamInfo(1)"></div>
+      <div class="field"><label>Temperatur <span class="unit-s">°C</span></label><input type="number" class="inp-a" id="t1" value="20" step="0.5" inputmode="decimal" oninput="updateStreamInfo(1)"></div>
+    </div>
+    <div id="if1"><div class="field-row">
+      <div class="field"><label>Feuchtegehalt x <span class="unit-s">g/kg</span></label><input type="number" class="inp-a" id="x1" value="7.19" step="0.01" min="0" inputmode="decimal" oninput="updateStreamInfo(1)"></div>
+      <div class="field"><label>→ Rel. Feuchte <span class="unit-s">%</span></label><input type="number" class="inp-a" id="calc-rh1" readonly style="opacity:.7;cursor:default"></div>
+    </div></div>
+    <div id="ir1" style="display:none"><div class="field-row">
+      <div class="field"><label>Rel. Feuchte φ <span class="unit-s">%</span></label><input type="number" class="inp-a" id="rh1" value="50" step="1" min="0" max="100" inputmode="decimal" oninput="updateStreamInfo(1)"></div>
+      <div class="field"><label>→ Feuchtegehalt x <span class="unit-s">g/kg</span></label><input type="number" class="inp-a" id="calc-x1" readonly style="opacity:.7;cursor:default"></div>
+    </div></div>
+    <div class="stream-info">
+      <div class="si si-a"><div class="sl">Taupunkt</div><div class="sv" id="si-td1">—<span class="su"> °C</span></div></div>
+      <div class="si si-a"><div class="sl">Enthalpie h</div><div class="sv" id="si-h1">—<span class="su"> kJ/kg</span></div></div>
+    </div>
+  </div>
+  <div class="card card-b">
+    <span class="badge badge-b">Luftstrom B</span>
+    <div class="field-row">
+      <div class="field"><label>Volumenstrom <span class="unit-s">m³/h</span></label><input type="number" class="inp-b" id="v2" value="500" step="10" min="0" inputmode="decimal" oninput="updateStreamInfo(2)"></div>
+      <div class="field"><label>Temperatur <span class="unit-s">°C</span></label><input type="number" class="inp-b" id="t2" value="30" step="0.5" inputmode="decimal" oninput="updateStreamInfo(2)"></div>
+    </div>
+    <div id="if2"><div class="field-row">
+      <div class="field"><label>Feuchtegehalt x <span class="unit-s">g/kg</span></label><input type="number" class="inp-b" id="x2" value="15.74" step="0.01" min="0" inputmode="decimal" oninput="updateStreamInfo(2)"></div>
+      <div class="field"><label>→ Rel. Feuchte <span class="unit-s">%</span></label><input type="number" class="inp-b" id="calc-rh2" readonly style="opacity:.7;cursor:default"></div>
+    </div></div>
+    <div id="ir2" style="display:none"><div class="field-row">
+      <div class="field"><label>Rel. Feuchte φ <span class="unit-s">%</span></label><input type="number" class="inp-b" id="rh2" value="60" step="1" min="0" max="100" inputmode="decimal" oninput="updateStreamInfo(2)"></div>
+      <div class="field"><label>→ Feuchtegehalt x <span class="unit-s">g/kg</span></label><input type="number" class="inp-b" id="calc-x2" readonly style="opacity:.7;cursor:default"></div>
+    </div></div>
+    <div class="stream-info">
+      <div class="si si-b"><div class="sl">Taupunkt</div><div class="sv" id="si-td2">—<span class="su"> °C</span></div></div>
+      <div class="si si-b"><div class="sl">Enthalpie h</div><div class="sv" id="si-h2">—<span class="su"> kJ/kg</span></div></div>
+    </div>
+  </div>
+  <div class="error" id="error-box"></div>
+  <button class="calc-btn" onclick="berechnen()">Mischung berechnen ›</button>
+  <div class="formula-box">
+    <div class="ft">Formeln &amp; Quellen</div>
+    <div>p<sub>s</sub>=611,2·e^(17,62T/(243,12+T)) · x=0,622·φ·p<sub>s</sub>/(p−φ·p<sub>s</sub>) · h=1,006T+x·(2501+1,86T)</div>
+    <div>Mischung: massengewichtet (ṁ=V̇·ρ) · p(H)=101325·(1−H/44330)^5,255</div>
+    <div style="margin-top:4px;font-size:10px;color:var(--text3)">ASHRAE Fundamentals · Magnus (Tetens 1930) · VDI 2089 · ISA-Atmosphäre</div>
+  </div>
+  <div class="page-footer"><a href="https://www.mm-rlt.de" target="_blank">www.mm-rlt.de</a></div>
+</div>
+
+<!-- ══ ERGEBNIS ══ -->
+<div class="page" id="page-ergebnis">
+  <div class="placeholder" id="res-ph">Noch keine Berechnung.<br>Bitte zuerst Eingabe ausfüllen.</div>
+  <div id="res-content" style="display:none">
+    <div class="card card-green">
+      <span class="badge badge-mix">Mischluft A+B</span>
+      <div class="metric-h">
+        <div class="lbl">Spezifische Enthalpie h</div>
+        <div><span class="big" id="res-h">—</span><span class="bu">kJ/kg</span></div>
+        <div class="form">h = c<sub>p,L</sub>·T + x·(r₀ + c<sub>p,D</sub>·T)</div>
+      </div>
+      <div class="result-grid">
+        <div class="metric"><div class="lbl">Temperatur</div><div class="val" id="res-t">—<span class="us"> °C</span></div></div>
+        <div class="metric"><div class="lbl">Feuchtegehalt x</div><div class="val" id="res-x">—<span class="us"> g/kg</span></div></div>
+        <div class="metric"><div class="lbl">Rel. Feuchte φ</div><div class="val" id="res-rh">—<span class="us"> %</span></div></div>
+        <div class="metric"><div class="lbl">Volumenstrom</div><div class="val" id="res-v">—<span class="us"> m³/h</span></div></div>
+      </div>
+      <hr class="divider">
+      <div class="info-grid">
+        <div class="info-cell"><span class="ik">Taupunkt</span><span class="iv" id="res-td">—</span></div>
+        <div class="info-cell"><span class="ik">Feuchtkugel t<sub>f</sub></span><span class="iv" id="res-tf">—</span></div>
+        <div class="info-cell"><span class="ik">Massenstrom</span><span class="iv" id="res-m">—</span></div>
+        <div class="info-cell"><span class="ik">Luftdichte ρ</span><span class="iv" id="res-rho">—</span></div>
+        <div class="info-cell"><span class="ik">Enthalpiestrom</span><span class="iv" id="res-hs">—</span></div>
+        <div class="info-cell"><span class="ik">Wasserstrom</span><span class="iv" id="res-ws">—</span></div>
+        <div class="info-cell"><span class="ik">Luftdruck p</span><span class="iv" id="res-p">—</span></div>
+        <div class="info-cell"><span class="ik">p-Sättigung</span><span class="iv" id="res-psat">—</span></div>
+        <div class="info-cell" style="grid-column:1/-1"><span class="ik">p-partiell</span><span class="iv" id="res-ppart">—</span></div>
+      </div>
+      <hr class="divider">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:5px">Anteil am Volumenstrom</div>
+      <div class="bar-wrap"><div class="bar-fill" id="bar1" style="width:0%"></div></div>
+      <div class="bar-lbl"><span id="brl1">A</span><span id="brl2">B</span></div>
+      <div class="warn" id="hint-box"></div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-a"><div class="detail-title dt-a">Luftstrom A</div>
+        <div class="detail-row"><span class="ik">x</span><span class="iv" id="d-x1">—</span></div>
+        <div class="detail-row"><span class="ik">φ</span><span class="iv" id="d-rh1">—</span></div>
+        <div class="detail-row"><span class="ik">h</span><span class="iv" id="d-h1">—</span></div>
+        <div class="detail-row"><span class="ik">Taupunkt</span><span class="iv" id="d-td1">—</span></div>
+        <div class="detail-row"><span class="ik">ρ</span><span class="iv" id="d-rho1">—</span></div>
+        <div class="detail-row"><span class="ik">ṁ</span><span class="iv" id="d-m1">—</span></div>
+      </div>
+      <div class="detail-b"><div class="detail-title dt-b">Luftstrom B</div>
+        <div class="detail-row"><span class="ik">x</span><span class="iv" id="d-x2">—</span></div>
+        <div class="detail-row"><span class="ik">φ</span><span class="iv" id="d-rh2">—</span></div>
+        <div class="detail-row"><span class="ik">h</span><span class="iv" id="d-h2">—</span></div>
+        <div class="detail-row"><span class="ik">Taupunkt</span><span class="iv" id="d-td2">—</span></div>
+        <div class="detail-row"><span class="ik">ρ</span><span class="iv" id="d-rho2">—</span></div>
+        <div class="detail-row"><span class="ik">ṁ</span><span class="iv" id="d-m2">—</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="page-footer"><a href="https://www.mm-rlt.de" target="_blank">www.mm-rlt.de</a></div>
+</div>
+
+<!-- ══ BETRIEBSPUNKT ══ -->
+<div class="page" id="page-betrieb">
+  <div class="card card-red">
+    <span class="badge badge-bp">Betriebspunkt</span>
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="switchBPmode('rh',this)">Rel. Feuchte φ (%)</button>
+      <button class="mode-tab" onclick="switchBPmode('x',this)">Feuchtegehalt x (g/kg)</button>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Temperatur <span class="unit-s">°C</span></label><input type="number" class="inp-red" id="bp-t" value="26" step="0.5" inputmode="decimal" oninput="updateBP()"></div>
+      <div class="field" id="bp-rh-field"><label>Rel. Feuchte φ <span class="unit-s">%</span></label><input type="number" class="inp-red" id="bp-rh" value="50" step="1" min="0" max="100" inputmode="decimal" oninput="updateBP()"></div>
+      <div class="field" id="bp-x-field" style="display:none"><label>Feuchtegehalt x <span class="unit-s">g/kg</span></label><input type="number" class="inp-red" id="bp-x" value="10" step="0.1" min="0" inputmode="decimal" oninput="updateBP()"></div>
+    </div>
+    <div class="stream-info">
+      <div class="si si-bp"><div class="sl">Feuchtegehalt x</div><div class="sv" id="bp-res-x">—<span class="su"> g/kg</span></div></div>
+      <div class="si si-bp"><div class="sl">Enthalpie h</div><div class="sv" id="bp-res-h">—<span class="su"> kJ/kg</span></div></div>
+      <div class="si si-bp"><div class="sl">Taupunkt</div><div class="sv" id="bp-res-td">—<span class="su"> °C</span></div></div>
+      <div class="si si-bp"><div class="sl">Rel. Feuchte φ</div><div class="sv" id="bp-res-rh">—<span class="su"> %</span></div></div>
+    </div>
+  </div>
+  <div class="card card-white" id="bp-misch-info" style="display:none">
+    <div style="font-size:11px;font-weight:600;margin-bottom:6px;color:var(--text2)">Abstand vom Mischluftpunkt</div>
+    <div style="display:flex;gap:0;font-size:12px">
+      <div style="flex:1;text-align:center;padding:6px 4px;background:rgba(26,111,187,.1);border-radius:6px 0 0 6px">
+        <div style="font-size:10px;color:var(--text2);margin-bottom:2px">ΔT</div>
+        <div style="font-weight:700" id="bp-dt">—</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:6px 4px;background:rgba(26,122,64,.1);border-left:0.5px solid rgba(0,0,0,.08);border-right:0.5px solid rgba(0,0,0,.08)">
+        <div style="font-size:10px;color:var(--text2);margin-bottom:2px">Δx</div>
+        <div style="font-weight:700" id="bp-dx">—</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:6px 4px;background:rgba(83,74,183,.1);border-radius:0 6px 6px 0">
+        <div style="font-size:10px;color:var(--text2);margin-bottom:2px">Δh</div>
+        <div style="font-weight:700" id="bp-dh">—</div>
+      </div>
+    </div>
+  </div>
+  <div id="energy-box" style="display:none">
+    <div class="energy-box" id="energy-card">
+      <div class="energy-title"><span class="badge" id="energy-badge">—</span><span id="energy-label" style="font-size:13px;font-weight:600">Energiebedarf</span></div>
+      <div class="energy-kw" id="energy-kw-val">—<span class="energy-unit">kW</span></div>
+      <div id="energy-hint" style="font-size:12px;margin-top:6px;font-weight:500"></div>
+      <div class="energy-grid">
+        <div class="energy-metric"><div class="el">h<sub>Mischluft</sub></div><div class="ev" id="e-hm">—</div></div>
+        <div class="energy-metric"><div class="el">h<sub>Betriebspunkt</sub></div><div class="ev" id="e-hbp">—</div></div>
+        <div class="energy-metric"><div class="el">Δh</div><div class="ev" id="e-dh">—</div></div>
+        <div class="energy-metric"><div class="el">Massenstrom ṁ</div><div class="ev" id="e-mdot">—</div></div>
+      </div>
+      <div style="font-size:10px;margin-top:10px;opacity:.6">Q = ṁ · Δh / 3600 [kW] · Quelle: ASHRAE Fundamentals</div>
+    </div>
+  </div>
+  <button class="calc-btn" style="background:#cc1111" onclick="applyBP()">Im Diagramm anzeigen ›</button>
+  <div class="page-footer"><a href="https://www.mm-rlt.de" target="_blank">www.mm-rlt.de</a></div>
+</div>
+
+<!-- ══ hx-DIAGRAMM ══ -->
+<div class="page" id="page-diagramm">
+
+  <!-- Modus-Auswahl über dem Diagramm -->
+  <div style="display:flex;gap:0;margin-bottom:10px;border-radius:12px;overflow:hidden;border:2.5px solid #1a1aff;box-shadow:0 2px 8px rgba(26,26,255,.15)">
+    <button id="diag-modus-misch" onclick="setModus('misch')"
+      style="flex:1;padding:14px 8px;text-align:center;font-size:15px;font-weight:700;cursor:pointer;border:none;background:#1a1aff;color:#FFE600;letter-spacing:.01em">
+      🔀&nbsp; Mischluft A+B
+    </button>
+    <button id="diag-modus-wrg" onclick="setModus('wrg')"
+      style="flex:1;padding:14px 8px;text-align:center;font-size:15px;font-weight:600;cursor:pointer;border:none;border-left:2.5px solid #1a1aff;background:#fff;color:#1a1aff;letter-spacing:.01em">
+      ♻&nbsp; Lüftungsgerät WRG/FRG
+    </button>
+  </div>
+
+  <canvas id="hxC"></canvas>
+  <div class="legend">
+    <span class="li"><span class="ld" style="background:#1a1aff;height:3px"></span>φ=100%</span>
+    <span class="li"><span class="ld" style="background:#1a6fbb;height:2px"></span>φ=50%</span>
+    <span class="li"><span class="ld" style="background:#378ADD"></span>φ-Linien</span>
+    <span class="li"><span class="ld" style="background:#8B0000"></span>Isotherme</span>
+    <span class="li"><span class="ld" style="background:#7F77DD"></span>Isenthalpie</span>
+    <span class="li"><span style="width:8px;height:8px;background:#1a6fbb;border-radius:50%;display:inline-block"></span>A</span>
+    <span class="li"><span style="width:8px;height:8px;background:#cc6600;border-radius:50%;display:inline-block"></span>B</span>
+    <span class="li"><span style="width:8px;height:8px;background:#1a7a40;border-radius:50%;display:inline-block"></span>Mix</span>
+    <span class="li"><span style="width:8px;height:8px;background:#cc1111;border-radius:50%;display:inline-block"></span>BP</span>
+  </div>
+  <div class="diag-controls">
+    <div style="display:flex;gap:6px">
+      <button class="ctrl-btn" onclick="zoomBtn(1.3)">＋</button>
+      <button class="ctrl-btn" onclick="zoomBtn(1/1.3)">－</button>
+      <button class="ctrl-btn" onclick="resetView()">↺ Reset</button>
+    </div>
+    <span class="zoom-info" id="zoom-info">Zoom: 1.0×</span>
+  </div>
+  <div class="page-footer"><a href="https://www.mm-rlt.de" target="_blank">www.mm-rlt.de</a></div>
+</div>
+
+<!-- ══ WRG/FRG ══ -->
+<div class="page" id="page-wrg">
+
+  <div class="card card-aul">
+    <span class="badge badge-aul">Außenluft (Zuluft roh)</span>
+    <div class="field-row">
+      <div class="field"><label>Volumenstrom <span class="unit-s">m³/h</span></label>
+        <input type="number" class="inp-aul" id="v-aul" value="5000" step="100" min="0" inputmode="decimal" oninput="calcWRG()"></div>
+      <div class="field"><label>Temperatur <span class="unit-s">°C</span></label>
+        <input type="number" class="inp-aul" id="t-aul" value="-5" step="0.5" inputmode="decimal" oninput="calcWRG()"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Feuchtegehalt x <span class="unit-s">g/kg</span></label>
+        <input type="number" class="inp-aul" id="x-aul" value="1.5" step="0.01" min="0" inputmode="decimal" oninput="calcWRG()"></div>
+      <div class="field"><label>→ Rel. Feuchte <span class="unit-s">%</span></label>
+        <input type="number" class="inp-aul" id="rh-aul-calc" readonly style="opacity:.7;cursor:default"></div>
+    </div>
+    <div class="stream-info">
+      <div class="si si-aul"><div class="sl">Enthalpie h</div><div class="sv" id="h-aul-si">—<span class="su"> kJ/kg</span></div></div>
+      <div class="si si-aul"><div class="sl">Taupunkt</div><div class="sv" id="td-aul-si">—<span class="su"> °C</span></div></div>
+    </div>
+  </div>
+
+  <div class="card card-abl2">
+    <span class="badge badge-abl2">Abluft (Fortluft)</span>
+    <div class="field-row">
+      <div class="field"><label>Temperatur <span class="unit-s">°C</span></label>
+        <input type="number" class="inp-abl2" id="t-abl" value="22" step="0.5" inputmode="decimal" oninput="calcWRG()"></div>
+      <div class="field"><label>Feuchtegehalt x <span class="unit-s">g/kg</span></label>
+        <input type="number" class="inp-abl2" id="x-abl" value="8.0" step="0.01" min="0" inputmode="decimal" oninput="calcWRG()"></div>
+    </div>
+    <div class="stream-info">
+      <div class="si si-abl2"><div class="sl">Enthalpie h</div><div class="sv" id="h-abl-si">—<span class="su"> kJ/kg</span></div></div>
+      <div class="si si-abl2"><div class="sl">Rel. Feuchte</div><div class="sv" id="rh-abl-si">—<span class="su"> %</span></div></div>
+    </div>
+  </div>
+
+  <div class="card card-wrg">
+    <span class="badge badge-wrg">Wärme- &amp; Feuchterückgewinnung</span>
+    <!-- Gerätetyp -->
+    <div class="field" style="margin-bottom:14px">
+      <label>Gerätetyp (ErP-Grenzwert)</label>
+      <div style="display:flex;gap:0;border-radius:var(--r);overflow:hidden;border:0.5px solid #3355bb">
+        <button id="wrg-typ-kvs" onclick="setWRGTyp('kvs')"
+          style="flex:1;padding:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;border-right:0.5px solid #3355bb;background:#fff;color:#3355bb">
+          KVS-Gerät (min. 68%)
+        </button>
+        <button id="wrg-typ-sonst" onclick="setWRGTyp('sonst')"
+          style="flex:1;padding:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:#3355bb;color:#fff">
+          Sonstige (min. 73%)
+        </button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Temperatur-WRG η<sub>T</sub> <span class="unit-s">ErP min. 68%</span></label>
+      <div class="eta-row">
+        <input type="range" id="eta-t-slider" min="0" max="95" step="1" value="75" oninput="syncEta('t')">
+        <span class="eta-val" id="eta-t-val">75%</span>
+        <input type="number" class="inp-wrg2" id="eta-t" value="75" min="0" max="95" step="1" style="width:68px" inputmode="decimal" oninput="syncEta('t-inp')">
+      </div>
+      <div class="erp-bar"><div class="erp-marker" id="erp-t-marker" style="left:75%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3)">
+        <span>0%</span><span style="color:#cc4400;font-weight:600" id="erp-label-bar">ErP min. 73% (Sonstige)</span><span>95%</span>
+      </div>
+    </div>
+    <hr style="border:none;border-top:0.5px solid rgba(0,0,0,.12);margin:12px 0">
+    <div class="field">
+      <label>Feuchte-FRG η<sub>x</sub> <span class="unit-s">0% = keine FRG</span></label>
+      <div class="eta-row">
+        <input type="range" id="eta-x-slider" min="0" max="95" step="1" value="0" oninput="syncEta('x')">
+        <span class="eta-val" id="eta-x-val">0%</span>
+        <input type="number" class="inp-wrg2" id="eta-x" value="0" min="0" max="95" step="1" style="width:68px" inputmode="decimal" oninput="syncEta('x-inp')">
+      </div>
+      <div style="font-size:10px;color:var(--text2)">Sorptionsrotor oder Membrankassette</div>
+    </div>
+  </div>
+
+  <!-- Ergebnis WRG direkt auf der Seite -->
+  <div id="wrg-result" style="display:none">
+    <div class="card card-zul2">
+      <span class="badge badge-zul2">Zuluft nach WRG/FRG</span>
+      <div class="metric-h">
+        <div class="lbl">Enthalpie h<sub>ZUL</sub></div>
+        <div><span class="big" id="r-h-zul">—</span><span class="bu">kJ/kg</span></div>
+      </div>
+      <div class="result-grid">
+        <div class="metric metric-g"><div class="lbl">T<sub>ZUL</sub></div><div class="val" id="r-t-zul">—<span class="us"> °C</span></div></div>
+        <div class="metric metric-g"><div class="lbl">x<sub>ZUL</sub></div><div class="val" id="r-x-zul">—<span class="us"> g/kg</span></div></div>
+        <div class="metric metric-g"><div class="lbl">φ<sub>ZUL</sub></div><div class="val" id="r-rh-zul">—<span class="us"> %</span></div></div>
+        <div class="metric metric-g"><div class="lbl">Taupunkt</div><div class="val" id="r-td-zul">—<span class="us"> °C</span></div></div>
+      </div>
+      <hr class="divider">
+      <div class="info-grid">
+        <div class="info-cell"><span class="ik">Rückgew. Wärme</span><span class="iv" id="r-q-wrg">—</span></div>
+        <div class="info-cell"><span class="ik">ΔT (WRG)</span><span class="iv" id="r-dt-wrg">—</span></div>
+        <div class="info-cell"><span class="ik">Δx (FRG)</span><span class="iv" id="r-dx-frg">—</span></div>
+        <div class="info-cell"><span class="ik">Massenstrom</span><span class="iv" id="r-mdot">—</span></div>
+      </div>
+    </div>
+
+    <!-- Energie-Box WRG -->
+    <div class="energy-box" id="wrg-e-box">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span class="badge" id="wrg-e-badge">—</span>
+        <span id="wrg-e-label" style="font-size:13px;font-weight:600">Restleistung nach WRG</span>
+      </div>
+      <div class="energy-kw" id="wrg-e-kw">—<span class="energy-unit">kW</span></div>
+      <div id="wrg-e-hint" style="font-size:12px;margin-top:6px;font-weight:500"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+        <div style="background:rgba(0,0,0,.06);border-radius:8px;padding:9px 10px">
+          <div style="font-size:10px;opacity:.7;margin-bottom:2px">Ohne WRG erforderlich</div>
+          <div style="font-size:14px;font-weight:600" id="wrg-e-ohne">—</div>
+        </div>
+        <div style="background:rgba(0,0,0,.06);border-radius:8px;padding:9px 10px">
+          <div style="font-size:10px;opacity:.7;margin-bottom:2px">Einsparung durch WRG</div>
+          <div style="font-size:14px;font-weight:600;color:#1a7a40" id="wrg-e-einspar">—</div>
+        </div>
+      </div>
+      <div style="font-size:10px;margin-top:10px;opacity:.6">Q = ṁ·Δh/3600 [kW] · VDI 3803 · DIN EN 13053 · ErP 2016/2281</div>
+    </div>
+
+    <!-- Zustandsvergleich -->
+    <div class="card card-white">
+      <div style="font-size:12px;font-weight:600;margin-bottom:8px">Zustandsvergleich AUL → ZUL → ABL</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+        <div style="background:rgba(26,111,187,.12);border-radius:8px;padding:8px">
+          <div style="font-size:10px;color:var(--text2);margin-bottom:4px;font-weight:600">Außenluft</div>
+          <div style="font-size:11px" id="cmp-aul">—</div>
+        </div>
+        <div style="background:rgba(26,122,64,.12);border-radius:8px;padding:8px">
+          <div style="font-size:10px;color:var(--text2);margin-bottom:4px;font-weight:600">Zuluft n. WRG</div>
+          <div style="font-size:11px" id="cmp-zul">—</div>
+        </div>
+        <div style="background:rgba(204,102,0,.12);border-radius:8px;padding:8px">
+          <div style="font-size:10px;color:var(--text2);margin-bottom:4px;font-weight:600">Abluft</div>
+          <div style="font-size:11px" id="cmp-abl">—</div>
+        </div>
+      </div>
+      <div class="warn" id="wrg-warn-box" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <button class="calc-btn-wrg" onclick="calcWRG()">WRG/FRG berechnen ›</button>
+
+  <div class="formula-box">
+    <div class="ft">Formeln &amp; Quellen</div>
+    <div>T<sub>ZUL</sub>=T<sub>AUL</sub>+η<sub>T</sub>·(T<sub>ABL</sub>−T<sub>AUL</sub>) · x<sub>ZUL</sub>=x<sub>AUL</sub>+η<sub>x</sub>·(x<sub>ABL</sub>−x<sub>AUL</sub>)</div>
+    <div>Q<sub>Rest</sub>=ṁ<sub>AUL</sub>·(h<sub>ABL</sub>−h<sub>ZUL,n.WRG</sub>)/3600 [kW]</div>
+    <div style="margin-top:3px;font-size:10px;color:var(--text3)">VDI 3803 · DIN EN 13053 · ErP-Richtlinie 2016/2281</div>
+  </div>
+  <div class="page-footer"><a href="https://www.mm-rlt.de" target="_blank">www.mm-rlt.de</a></div>
+</div>
+
+
+</div>
+</div>
+
+<script>
+// ── Konstanten ──────────────────────────────────────────────────────────────
+const COL_B='#cc6600';
+const xMIN=0,xMAX=20,tMIN=-15,tMAX=45; // neue Achsengrenzen
+
+const excelData=[
+  {T:-15,x10:0.1014,x20:0.2029,x30:0.3043,x40:0.4058,x50:0.5072,x60:0.6087,x70:0.7101,x80:0.8116,x90:0.9130,x100:1.0145},
+  {T:-10,x10:0.1595,x20:0.3525,x30:0.4784,x40:0.6379,x50:0.7974,x60:0.9569,x70:1.1164,x80:1.2758,x90:1.4353,x100:1.5948},
+  {T:-5,x10:0.2468,x20:0.5185,x30:0.7404,x40:0.9871,x50:1.2339,x60:1.4807,x70:1.7275,x80:1.9743,x90:2.2211,x100:2.4679},
+  {T:0,x10:0.3763,x20:0.7507,x30:1.1290,x40:1.5053,x50:1.8816,x60:2.2580,x70:2.6343,x80:3.0106,x90:3.3869,x100:3.7633},
+  {T:5,x10:0.5377,x20:1.0710,x30:1.6132,x40:2.1510,x50:2.6887,x60:3.2265,x70:3.7642,x80:4.3019,x90:4.8397,x100:5.3774},
+  {T:10,x10:0.7581,x20:1.5066,x30:2.2743,x40:3.0324,x50:3.7905,x60:4.5486,x70:5.3066,x80:6.0647,x90:6.8228,x100:7.5809},
+  {T:15,x10:1.0553,x20:2.0919,x30:3.1659,x40:4.2211,x50:5.2764,x60:6.3317,x70:7.3870,x80:8.4423,x90:9.4976,x100:10.5529},
+  {T:20,x10:1.4517,x20:2.8688,x30:4.3552,x40:5.8069,x50:7.2586,x60:8.7103,x70:10.162,x80:11.614,x90:13.066,x100:14.517},
+  {T:25,x10:1.9753,x20:3.8889,x30:5.9258,x40:7.9011,x50:9.8764,x60:11.852,x70:13.827,x80:15.802,x90:17.778,x100:19.753},
+  {T:30,x10:2.6606,x20:5.2144,x30:7.9818,x40:10.643,x50:13.303,x60:15.964,x70:18.624,x80:21.285,x90:23.946,x100:26.606},
+  {T:35,x10:3.5509,x20:6.9201,x30:10.653,x40:14.204,x50:17.754,x60:21.305,x70:24.856,x80:28.407,x90:31.958,x100:35.509},
+  {T:40,x10:4.7000,x20:9.0953,x30:14.100,x40:18.800,x50:23.500,x60:28.200,x70:32.900,x80:37.600,x90:42.300,x100:47.000},
+  {T:45,x10:6.1757,x20:11.846,x30:18.527,x40:24.703,x50:30.879,x60:37.054,x70:43.230,x80:49.406,x90:55.582,x100:61.757},
+];
+
+// Vollständige h-Tabelle: h-Wert + T bei x=0 (T=h/1.006)
+const hTable=[
+  {h:90,T:90/1.006},{h:80,T:80/1.006},{h:70,T:70/1.006},{h:60,T:60/1.006},
+  {h:50,T:50/1.006},{h:40,T:40/1.006},{h:30,T:30/1.006},{h:20,T:20/1.006},
+  {h:10,T:10/1.006},{h:0,T:0},{h:-10,T:-10/1.006},{h:-15,T:-15/1.006}
+];
+
+function psat(T){return 611.2*Math.exp(17.62*T/(243.12+T));}
+function xFromRH(T,rh,p=101325){const ps=psat(T),pv=rh/100*ps;if(p-pv<=0)return 99;return 0.622*pv/(p-pv)*1000;}
+function rhFromX(T,x,p=101325){const xk=x/1000,pv=xk*p/(0.622+xk);return Math.min(100,pv/psat(T)*100);}
+function taupunkt(x,p=101325){const xk=x/1000,pv=xk*p/(0.622+xk);if(pv<=0)return null;return 243.12*Math.log(pv/611.2)/(17.62-Math.log(pv/611.2));}
+function enthalpie(T,x){return 1.006*T+(x/1000)*(2501+1.86*T);}
+function dichte(T,x,p=101325){const xk=x/1000,pv=xk*p/(0.622+xk);return(p-pv)/(287.05*(T+273.15))+pv/(461.52*(T+273.15));}
+function pPartial(x,p=101325){return(x/1000)*p/(0.622+x/1000);}
+function TfromHx(h,x){return(h-(x/1000)*2501)/(1.006+(x/1000)*1.86);}
+function feuchtkugel(T,x,p=101325){const hT=enthalpie(T,x);let lo=-30,hi=T;for(let i=0;i<60;i++){const m=(lo+hi)/2;enthalpie(m,xFromRH(m,100,p))<hT?lo=m:hi=m;}return(lo+hi)/2;}
+
+let mode='feucht',pmode='std',pVal=101325,state=null,bpState=null,bpMode='rh';
+let view={ox:0,oy:0,scale:1},lastPinchDist=null,lastPanPos=null,isPanning=false;
+const PAD={Lh:44,Lt:34,R:28,T:12,B:32};
+function getPL(){return PAD.Lh+PAD.Lt;}
+function clampView(W,H){const pw=W-getPL()-PAD.R,ph=H-PAD.T-PAD.B;view.ox=Math.max(-pw*(view.scale-1),Math.min(0,view.ox));view.oy=Math.max(-ph*(view.scale-1),Math.min(0,view.oy));}
+function zoomBtn(f){view.scale=Math.max(1,Math.min(8,view.scale*f));if(view.scale===1){view.ox=0;view.oy=0;}document.getElementById('zoom-info').textContent='Zoom: '+view.scale.toFixed(1)+'×';drawDiagram();}
+function resetView(){view={ox:0,oy:0,scale:1};document.getElementById('zoom-info').textContent='Zoom: 1.0×';drawDiagram();}
+
+function showPage(p,btn){
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(e=>e.classList.remove('active'));
+  const pg=document.getElementById('page-'+p);if(pg)pg.classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(p==='diagramm')setTimeout(drawDiagram,60);
+}
+function setPmode(m,btn){pmode=m;document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');document.getElementById('p-hoehe-inp').style.display=m==='hoehe'?'':'none';document.getElementById('p-man-inp').style.display=m==='man'?'':'none';if(m==='std')pVal=101325;else if(m==='hoehe')updatePfromH();else updatePmanual();updatePdisplay();updateStreamInfo(1);updateStreamInfo(2);calcWRG();}
+function updatePfromH(){const H=parseFloat(document.getElementById('hoehe').value)||0;pVal=101325*Math.pow(1-H/44330,5.255);document.getElementById('p-anzeige').innerHTML='<strong>'+Math.round(pVal).toLocaleString('de-DE')+' Pa</strong> ('+H.toFixed(0)+' m ü.NN)';updateStreamInfo(1);updateStreamInfo(2);}
+function updatePmanual(){pVal=parseFloat(document.getElementById('p-manual').value)||101325;updatePdisplay();updateStreamInfo(1);updateStreamInfo(2);calcWRG();}
+function updatePdisplay(){document.getElementById('p-anzeige').innerHTML='<strong>'+Math.round(pVal).toLocaleString('de-DE')+' Pa</strong>';}
+function switchMode(m,btn){mode=m;document.querySelectorAll('.mode-tab:not([id^=ptab-])').forEach(t=>t.classList.remove('active'));btn.classList.add('active');['if1','if2'].forEach(id=>document.getElementById(id).style.display=m==='feucht'?'':'none');['ir1','ir2'].forEach(id=>document.getElementById(id).style.display=m==='feucht'?'none':'');updateStreamInfo(1);updateStreamInfo(2);}
+function updateStreamInfo(n){const T=parseFloat(document.getElementById('t'+n).value);let x,rh;if(mode==='feucht'){x=parseFloat(document.getElementById('x'+n).value);if(!isNaN(T)&&!isNaN(x)&&x>=0){rh=rhFromX(T,x,pVal);const el=document.getElementById('calc-rh'+n);if(el)el.value=rh.toFixed(1);}}else{rh=parseFloat(document.getElementById('rh'+n).value);if(!isNaN(T)&&!isNaN(rh)){x=xFromRH(T,rh,pVal);const el=document.getElementById('calc-x'+n);if(el)el.value=x.toFixed(2);}}if(isNaN(T)||isNaN(x)||x<0){document.getElementById('si-td'+n).innerHTML='—<span class="su"> °C</span>';document.getElementById('si-h'+n).innerHTML='—<span class="su"> kJ/kg</span>';return;}const td=taupunkt(x,pVal),h=enthalpie(T,x);document.getElementById('si-td'+n).innerHTML=(td!==null?td.toFixed(1):'—')+'<span class="su"> °C</span>';document.getElementById('si-h'+n).innerHTML=h.toFixed(2)+'<span class="su"> kJ/kg</span>';}
+function switchBPmode(m,btn){bpMode=m;document.querySelectorAll('#page-betrieb .mode-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');document.getElementById('bp-rh-field').style.display=m==='rh'?'':'none';document.getElementById('bp-x-field').style.display=m==='x'?'':'none';updateBP();}
+function updateBP(){
+  const T=parseFloat(document.getElementById('bp-t').value);let x,rh;
+  if(bpMode==='rh'){rh=parseFloat(document.getElementById('bp-rh').value);if(!isNaN(T)&&!isNaN(rh))x=xFromRH(T,rh,pVal);}
+  else{x=parseFloat(document.getElementById('bp-x').value);if(!isNaN(T)&&!isNaN(x))rh=rhFromX(T,x,pVal);}
+  if(isNaN(T)||isNaN(x)||isNaN(rh)){bpState=null;document.getElementById('energy-box').style.display='none';document.getElementById('bp-misch-info').style.display='none';return;}
+  const h=enthalpie(T,x),td=taupunkt(x,pVal),rho=dichte(T,x,pVal);
+  document.getElementById('bp-res-x').innerHTML=x.toFixed(2)+'<span class="su"> g/kg</span>';
+  document.getElementById('bp-res-h').innerHTML=h.toFixed(2)+'<span class="su"> kJ/kg</span>';
+  document.getElementById('bp-res-td').innerHTML=(td!==null?td.toFixed(1):'—')+'<span class="su"> °C</span>';
+  document.getElementById('bp-res-rh').innerHTML=rh.toFixed(1)+'<span class="su"> %</span>';
+  bpState={T,x,h,rh,td,rho};
+  if(state){
+    document.getElementById('bp-misch-info').style.display='block';
+    document.getElementById('bp-dt').textContent=(T-state.Tm).toFixed(2)+' K';
+    document.getElementById('bp-dx').textContent=(x-state.xm).toFixed(3)+' g/kg';
+    document.getElementById('bp-dh').textContent=(h-state.hm).toFixed(2)+' kJ/kg';
+    const dh=h-state.hm,Q=state.mT*dh/3600,isHeat=dh>0.05,isCool=dh<-0.05;
+    const card=document.getElementById('energy-card'),badge=document.getElementById('energy-badge'),kwEl=document.getElementById('energy-kw-val'),hint=document.getElementById('energy-hint'),lbl=document.getElementById('energy-label');
+    if(isHeat){card.className='energy-box card-heat';badge.className='badge badge-heat';badge.textContent='🔥 Heizen';lbl.textContent='Wärmebedarf';kwEl.innerHTML=Math.abs(Q).toFixed(2)+'<span class="energy-unit">kW</span>';kwEl.className='energy-kw heat-kw';hint.innerHTML='➕ Wärme erforderlich: h<sub>BP</sub> &gt; h<sub>Mix</sub>';hint.style.color='#cc4400';}
+    else if(isCool){card.className='energy-box card-cool';badge.className='badge badge-cool';badge.textContent='❄ Kühlen';lbl.textContent='Kältebedarf';kwEl.innerHTML=Math.abs(Q).toFixed(2)+'<span class="energy-unit">kW</span>';kwEl.className='energy-kw cool-kw';hint.innerHTML='➖ Kühlung erforderlich: h<sub>BP</sub> &lt; h<sub>Mix</sub>';hint.style.color='#0066cc';}
+    else{card.className='energy-box card-neutral';badge.className='badge badge-neutral';badge.textContent='✓ Ausgeglichen';lbl.textContent='Energiebedarf';kwEl.innerHTML='≈ 0<span class="energy-unit">kW</span>';kwEl.className='energy-kw neutral-kw';hint.textContent='Kein Heizen oder Kühlen erforderlich';hint.style.color='#555';}
+    document.getElementById('e-hm').textContent=state.hm.toFixed(2)+' kJ/kg';
+    document.getElementById('e-hbp').textContent=h.toFixed(2)+' kJ/kg';
+    document.getElementById('e-dh').textContent=(dh>=0?'+':'')+dh.toFixed(2)+' kJ/kg';
+    document.getElementById('e-mdot').textContent=state.mT.toFixed(1)+' kg/h';
+    document.getElementById('energy-box').style.display='block';
+  }
+}
+function applyBP(){updateBP();showPageById('diagramm');}
+function showError(msg){const e=document.getElementById('error-box');e.textContent=msg;e.style.display='block';}
+function berechnen(){
+  document.getElementById('error-box').style.display='none';
+  if(pmode==='man')pVal=parseFloat(document.getElementById('p-manual').value)||101325;
+  const p=pVal,V1=parseFloat(document.getElementById('v1').value),V2=parseFloat(document.getElementById('v2').value),T1=parseFloat(document.getElementById('t1').value),T2=parseFloat(document.getElementById('t2').value);
+  if([V1,V2,T1,T2].some(v=>isNaN(v))){showError('Bitte alle Felder ausfüllen.');return;}
+  let x1,x2;
+  if(mode==='feucht'){x1=parseFloat(document.getElementById('x1').value);x2=parseFloat(document.getElementById('x2').value);}
+  else{x1=xFromRH(T1,parseFloat(document.getElementById('rh1').value),p);x2=xFromRH(T2,parseFloat(document.getElementById('rh2').value),p);}
+  const rh1v=rhFromX(T1,x1,p),rh2v=rhFromX(T2,x2,p),rho1=dichte(T1,x1,p),rho2=dichte(T2,x2,p),m1=V1*rho1,m2=V2*rho2,mT=m1+m2;
+  if(mT<=0){showError('Volumenstrom > 0 erforderlich.');return;}
+  const h1=enthalpie(T1,x1),h2=enthalpie(T2,x2),td1=taupunkt(x1,p),td2=taupunkt(x2,p),Tm=(m1*T1+m2*T2)/mT,xm=(m1*x1+m2*x2)/mT,hm=enthalpie(Tm,xm),rhm=rhFromX(Tm,xm,p),tdm=taupunkt(xm,p),rhom=dichte(Tm,xm,p),Vm=V1+V2,tfm=feuchtkugel(Tm,xm,p);
+  state={T1,x1,h1,rh1:rh1v,rho1,m1,td1,T2,x2,h2,rh2:rh2v,rho2,m2,td2,Tm,xm,hm,rhm,tdm,rhom,Vm,V1,V2,mT,p};
+  const f=(v,d)=>isNaN(v)?'—':v.toFixed(d);
+  document.getElementById('res-h').textContent=f(hm,2);
+  document.getElementById('res-t').innerHTML=f(Tm,2)+'<span class="us"> °C</span>';
+  document.getElementById('res-x').innerHTML=f(xm,2)+'<span class="us"> g/kg</span>';
+  document.getElementById('res-rh').innerHTML=f(rhm,1)+'<span class="us"> %</span>';
+  document.getElementById('res-v').innerHTML=Vm.toLocaleString('de-DE')+'<span class="us"> m³/h</span>';
+  document.getElementById('res-td').textContent=(tdm!==null?f(tdm,1):'—')+' °C';
+  document.getElementById('res-tf').textContent=f(tfm,1)+' °C';
+  document.getElementById('res-m').textContent=f(mT,1)+' kg/h';
+  document.getElementById('res-hs').textContent=f(mT*hm,0)+' kJ/h';
+  document.getElementById('res-ws').textContent=f(mT*xm,0)+' g/h';
+  document.getElementById('res-rho').textContent=f(rhom,3)+' kg/m³';
+  document.getElementById('res-p').textContent=Math.round(p).toLocaleString('de-DE')+' Pa';
+  document.getElementById('res-psat').textContent=f(psat(Tm),0)+' Pa';
+  document.getElementById('res-ppart').textContent=f(pPartial(xm,p),0)+' Pa';
+  document.getElementById('d-x1').textContent=f(x1,2)+' g/kg';document.getElementById('d-rh1').textContent=f(rh1v,1)+' %';document.getElementById('d-h1').textContent=f(h1,2)+' kJ/kg';document.getElementById('d-td1').textContent=(td1!==null?f(td1,1):'—')+' °C';document.getElementById('d-rho1').textContent=f(rho1,3)+' kg/m³';document.getElementById('d-m1').textContent=f(m1,0)+' kg/h';
+  document.getElementById('d-x2').textContent=f(x2,2)+' g/kg';document.getElementById('d-rh2').textContent=f(rh2v,1)+' %';document.getElementById('d-h2').textContent=f(h2,2)+' kJ/kg';document.getElementById('d-td2').textContent=(td2!==null?f(td2,1):'—')+' °C';document.getElementById('d-rho2').textContent=f(rho2,3)+' kg/m³';document.getElementById('d-m2').textContent=f(m2,0)+' kg/h';
+  const p1=Vm>0?V1/Vm*100:50;
+  document.getElementById('bar1').style.width=p1.toFixed(0)+'%';document.getElementById('bar1').textContent=p1.toFixed(0)+'%';
+  document.getElementById('brl1').textContent='A: '+V1.toLocaleString('de-DE')+' m³/h ('+p1.toFixed(0)+'%)';
+  document.getElementById('brl2').textContent='B: '+V2.toLocaleString('de-DE')+' m³/h ('+(100-p1).toFixed(0)+'%)';
+  document.getElementById('hint-box').textContent=rhm>95?'⚠ Nahe Sättigung – Kondensation möglich!':'';
+  document.getElementById('res-ph').style.display='none';document.getElementById('res-content').style.display='block';
+  updateBP();showPageById('ergebnis');
+  appModus='misch';updateDiagInfo();
+}
+
+// ── Touch / Zoom ──────────────────────────────────────────────────────────
+function setupTouch(canvas){
+  canvas.addEventListener('touchstart',e=>{if(e.touches.length===2){e.preventDefault();lastPinchDist=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY);}else if(e.touches.length===1){isPanning=true;lastPanPos={x:e.touches[0].clientX,y:e.touches[0].clientY};}},{passive:false});
+  canvas.addEventListener('touchmove',e=>{e.preventDefault();const dpr=window.devicePixelRatio||1,W=canvas.width/dpr,H=canvas.height/dpr;if(e.touches.length===2){const dist=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY);if(lastPinchDist){const f=dist/lastPinchDist,ns=Math.max(1,Math.min(8,view.scale*f)),rect=canvas.getBoundingClientRect(),cx_=((e.touches[0].clientX+e.touches[1].clientX)/2-rect.left),cy_=((e.touches[0].clientY+e.touches[1].clientY)/2-rect.top),pL=getPL(),pw=W-pL-PAD.R,ph=H-PAD.T-PAD.B,sd=ns-view.scale;view.ox-=(cx_-pL)/pw*pw*sd;view.oy-=(cy_-PAD.T)/ph*ph*sd;view.scale=ns;clampView(W,H);document.getElementById('zoom-info').textContent='Zoom: '+view.scale.toFixed(1)+'×';drawDiagram();}lastPinchDist=dist;}else if(e.touches.length===1&&isPanning&&lastPanPos){view.ox+=e.touches[0].clientX-lastPanPos.x;view.oy+=e.touches[0].clientY-lastPanPos.y;clampView(W,H);lastPanPos={x:e.touches[0].clientX,y:e.touches[0].clientY};drawDiagram();}},{passive:false});
+  canvas.addEventListener('touchend',e=>{if(e.touches.length<2)lastPinchDist=null;if(e.touches.length===0)isPanning=false;});
+  canvas.addEventListener('mousedown',e=>{isPanning=true;lastPanPos={x:e.clientX,y:e.clientY};canvas.classList.add('panning');});
+  canvas.addEventListener('mousemove',e=>{if(!isPanning||!lastPanPos)return;const dpr=window.devicePixelRatio||1,W=canvas.width/dpr,H=canvas.height/dpr;view.ox+=e.clientX-lastPanPos.x;view.oy+=e.clientY-lastPanPos.y;clampView(W,H);lastPanPos={x:e.clientX,y:e.clientY};drawDiagram();});
+  canvas.addEventListener('mouseup',()=>{isPanning=false;canvas.classList.remove('panning');});
+  canvas.addEventListener('mouseleave',()=>{isPanning=false;canvas.classList.remove('panning');});
+  canvas.addEventListener('wheel',e=>{e.preventDefault();const f=e.deltaY<0?1.15:1/1.15;view.scale=Math.max(1,Math.min(8,view.scale*f));if(view.scale===1){view.ox=0;view.oy=0;}clampView(canvas.width/(window.devicePixelRatio||1),canvas.height/(window.devicePixelRatio||1));document.getElementById('zoom-info').textContent='Zoom: '+view.scale.toFixed(1)+'×';drawDiagram();},{passive:false});
+}
+
+// ── Energie-Box im Canvas ─────────────────────────────────────────────────
+function drawEnergyBox(ctx,x,y,w,h,isHeat,isCool,kW,dark){
+  const r=8;
+  let bgCol,borderCol,textCol,accentCol,symbol,label;
+  if(isHeat){bgCol=dark?'rgba(120,40,0,0.85)':'rgba(255,240,230,0.93)';borderCol=dark?'#cc5500':'#ff6622';textCol=dark?'#ffbb88':'#aa3300';accentCol=dark?'#ff8844':'#cc4400';symbol='🔥';label='Heizen';}
+  else if(isCool){bgCol=dark?'rgba(0,30,90,0.85)':'rgba(230,244,255,0.93)';borderCol=dark?'#0055cc':'#3399ff';textCol=dark?'#88ccff':'#0055aa';accentCol=dark?'#55aaff':'#0066cc';symbol='❄';label='Kühlen';}
+  else{bgCol=dark?'rgba(40,40,40,0.85)':'rgba(245,245,245,0.93)';borderCol='#999';textCol=dark?'#bbb':'#555';accentCol='#777';symbol='✓';label='Ausgegl.';}
+  ctx.save();
+  ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h);
+  ctx.closePath();ctx.fillStyle=bgCol;ctx.fill();ctx.strokeStyle=borderCol;ctx.lineWidth=1.5;ctx.stroke();
+  ctx.fillStyle=accentCol;ctx.globalAlpha=0.85;ctx.beginPath();ctx.rect(x,y,4,h);ctx.fill();ctx.globalAlpha=1;
+  ctx.font=`${Math.round(h*0.46)}px -apple-system,sans-serif`;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(symbol,x+9,y+h*0.38);
+  ctx.font=`bold ${Math.round(h*0.22)}px -apple-system,sans-serif`;ctx.fillStyle=textCol;ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.fillText(label,x+9,y+h*0.73);
+  ctx.font=`bold ${Math.round(h*0.36)}px -apple-system,sans-serif`;ctx.fillStyle=accentCol;ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(Math.abs(kW).toFixed(1),x+w-20,y+h*0.42);
+  ctx.font=`${Math.round(h*0.2)}px -apple-system,sans-serif`;ctx.fillStyle=textCol;ctx.textAlign='right';ctx.textBaseline='alphabetic';ctx.fillText('kW',x+w-5,y+h*0.73);
+  ctx.restore();
+}
+
+// ── Diagramm ─────────────────────────────────────────────────────────────
+
+// ── Diagramm-Info Anzeige ─────────────────────────────────────────────────
+function updateDiagInfo(){
+  const el = document.getElementById('diag-mode-info');
+  const lbl = document.getElementById('diag-mode-label');
+  const fdiff = document.getElementById('diag-feuchte-diff');
+  if(!el) return;
+  // Diagramm-Buttons synchronisieren
+  const dM2=document.getElementById('diag-modus-misch');
+  const dW2=document.getElementById('diag-modus-wrg');
+  const aktS='flex:1;padding:14px 8px;text-align:center;font-size:15px;font-weight:700;cursor:pointer;border:none;background:#1a1aff;color:#FFE600;letter-spacing:.01em';
+  const inMstyle='flex:1;padding:14px 8px;text-align:center;font-size:15px;font-weight:600;cursor:pointer;border:none;border-left:2.5px solid #1a1aff;background:#fff;color:#1a1aff;letter-spacing:.01em';
+  const inRstyle='flex:1;padding:14px 8px;text-align:center;font-size:15px;font-weight:600;cursor:pointer;border:none;border-right:2.5px solid #1a1aff;background:#fff;color:#1a1aff;letter-spacing:.01em';
+  if(appModus==='wrg'){
+    if(dW2)dW2.style.cssText=aktS; if(dM2)dM2.style.cssText=inRstyle;
+  } else {
+    if(dM2)dM2.style.cssText=aktS; if(dW2)dW2.style.cssText=inMstyle;
+  }
+
+  if(appModus==='wrg' && wrgState){
+    el.style.display='block';
+    el.style.background='rgba(51,85,187,.1)';
+    el.style.borderColor='rgba(51,85,187,.3)';
+    lbl.style.color='#3355bb';
+    lbl.textContent='♻ Lüftungsgerät WRG/FRG';
+    // Feuchte-Differenz
+    const dx = wrgState.xZul - wrgState.xAul;
+    const mDot = wrgState.mDot;
+    if(Math.abs(dx)>0.001){
+      const dxKgh = mDot * dx / 1000; // kg/h
+      const dxkW  = mDot * Math.abs(dx)/1000 * 2501 / 3600; // kW (Verdampfungswärme)
+      fdiff.textContent = 'Feuchte: Δx='+(dx>=0?'+':'')+dx.toFixed(3)+' g/kg · '+(dxKgh>=0?'+':'')+dxKgh.toFixed(2)+' kg/h · ≈'+dxkW.toFixed(2)+' kW';
+    } else {
+      fdiff.textContent = 'Keine Feuchterückgewinnung (η_x=0%)';
+    }
+  } else if(appModus==='misch' && state){
+    el.style.display='block';
+    el.style.background='rgba(26,26,255,.08)';
+    el.style.borderColor='rgba(26,26,255,.2)';
+    lbl.style.color='#1a1aff';
+    lbl.textContent='🔀 Mischluft A+B';
+    fdiff.textContent='';
+  } else {
+    el.style.display='none';
+  }
+}
+function drawDiagram(){
+  updateDiagInfo();
+  const canvas=document.getElementById('hxC');
+  if(!canvas)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=Math.min(520,(canvas.parentElement.clientWidth||360)-4);
+  const footerH=38,H=Math.round(W*1.18)+footerH;
+  if(canvas.width!==W*dpr||canvas.height!==H*dpr){
+    canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';
+  }
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+  const dark=matchMedia('(prefers-color-scheme:dark)').matches;
+  const bg=dark?'#1e1e20':'#fff',axC=dark?'rgba(255,255,255,.7)':'rgba(0,0,0,.75)',
+        txtC=dark?'rgba(255,255,255,.85)':'rgba(0,0,0,.8)',
+        gridC=dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.06)',
+        footAccent=dark?'#7a9fff':'#1a1aff',
+        footSub=dark?'rgba(255,255,255,.42)':'rgba(0,0,0,.4)';
+  const padLh=PAD.Lh,padLt=PAD.Lt,padL=getPL(),padR=PAD.R,padT=PAD.T,padB=PAD.B;
+  const pw=W-padL-padR,ph=H-footerH-padT-padB,plotBottom=padT+ph;
+  const sc=view.scale,ox=view.ox,oy=view.oy;
+  const cyT=T=>padT+oy+(ph-(T-tMIN)/(tMAX-tMIN)*ph)*sc;
+  const cxX=x=>padL+ox+(x-xMIN)/(xMAX-xMIN)*pw*sc;
+
+  // Hintergrund
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  // ── Clip-Bereich: alles was ins Diagramm gehört ──────────────────────
+  ctx.save();
+  ctx.beginPath();ctx.rect(padL,padT,pw,ph);ctx.clip();
+
+  // Wasserzeichen
+  ctx.font='bold italic 11px -apple-system,sans-serif';
+  ctx.fillStyle=dark?'#aaaaff':'#1a1aff';ctx.globalAlpha=dark?0.055:0.07;ctx.textAlign='center';
+  for(let r=0;r<Math.ceil(ph/38)+2;r++)
+    for(let c=0;c<Math.ceil(pw/52)+2;c++){
+      const xp=padL+c*52+(r%2?26:0)-26,yp=padT+r*38+19;
+      ctx.save();ctx.translate(xp,yp);ctx.rotate(-25*Math.PI/180);ctx.fillText('by MM',0,0);ctx.restore();
+    }
+  ctx.globalAlpha=1;
+
+  // Gitter
+  ctx.strokeStyle=gridC;ctx.lineWidth=0.4;
+  for(let x=0;x<=20;x++){const cx_=cxX(x);if(cx_<padL-1||cx_>padL+pw+1)continue;ctx.beginPath();ctx.moveTo(cx_,padT);ctx.lineTo(cx_,padT+ph);ctx.stroke();}
+  for(let T=tMIN;T<=tMAX;T+=5){const cy_=cyT(T);if(cy_<padT-1||cy_>padT+ph+1)continue;ctx.beginPath();ctx.moveTo(padL,cy_);ctx.lineTo(padL+pw,cy_);ctx.stroke();}
+
+  // Behaglichkeitsfeld
+  [{x:4.3,T:20},{x:6.2,T:26},{x:11.55,T:26},{x:11.55,T:23.4},{x:9.4,T:20}].forEach((pt,i)=>{
+    if(i===0){ctx.beginPath();ctx.moveTo(cxX(pt.x),cyT(pt.T));}else ctx.lineTo(cxX(pt.x),cyT(pt.T));
+  });
+  ctx.closePath();ctx.fillStyle='rgba(76,175,80,.18)';ctx.fill();
+  ctx.strokeStyle='rgba(76,175,80,.55)';ctx.lineWidth=1;ctx.stroke();
+
+  // Schwülegrenze
+  ctx.strokeStyle='rgba(180,60,0,.4)';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+  const sx=cxX(14.1);
+  if(sx>padL&&sx<padL+pw){ctx.beginPath();ctx.moveTo(sx,padT);ctx.lineTo(sx,padT+ph);ctx.stroke();}
+  ctx.setLineDash([]);
+  if(sx>padL&&sx<padL+pw-5){ctx.fillStyle='rgba(180,60,0,.5)';ctx.font='9px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText('14,1 g/kg',sx+2,padT+11);}
+
+  // Isenthalpen
+  hTable.forEach(({h,T:T0})=>{
+    const pts=[];
+    for(let i=0;i<=120;i++){const xv=xMAX*i/120,Tv=TfromHx(h,xv);if(Tv<tMIN-0.5||Tv>tMAX+0.5)continue;pts.push([cxX(xv),cyT(Tv)]);}
+    if(pts.length<2)return;
+    ctx.strokeStyle='#7F77DD';ctx.lineWidth=0.9;ctx.globalAlpha=0.72;
+    ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);
+    ctx.stroke();ctx.globalAlpha=1;
+    ctx.font='bold 9px -apple-system,sans-serif';ctx.fillStyle='#7F77DD';ctx.globalAlpha=0.85;
+    const Tv_xMax=TfromHx(h,xMAX);
+    if(Tv_xMax>=tMIN&&Tv_xMax<=tMAX){
+      const y=cyT(Tv_xMax);if(y>padT&&y<padT+ph){ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(h+'kJ',padL+pw+2,y);}
+    } else if(Tv_xMax>tMAX){
+      let xEdge=xMAX;for(let xv=0;xv<=xMAX;xv+=0.1){if(TfromHx(h,xv)>=tMAX){xEdge=xv;break;}}
+      const cxE=cxX(xEdge);if(cxE>padL&&cxE<padL+pw){ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(h+'kJ',cxE,padT-1);}
+    }
+    ctx.globalAlpha=1;ctx.textBaseline='alphabetic';
+  });
+
+  // Isothermen
+  excelData.forEach(row=>{
+    if(row.T<tMIN||row.T>tMAX)return;
+    const cy_=cyT(row.T);if(cy_<padT-2||cy_>padT+ph+2)return;
+    ctx.strokeStyle='#8B0000';ctx.lineWidth=(row.T===0)?1.5:0.8;ctx.globalAlpha=(row.T===0)?0.9:0.65;
+    ctx.beginPath();ctx.moveTo(padL,cy_);ctx.lineTo(padL+pw,cy_);ctx.stroke();ctx.globalAlpha=1;
+  });
+
+  // φ-Linien
+  [10,20,30,40,50,60,70,80,90].forEach(rv=>{
+    const iF=(rv===50);ctx.strokeStyle='#1a6fbb';ctx.lineWidth=iF?2.2:0.9;ctx.globalAlpha=iF?0.9:0.5;
+    ctx.beginPath();let s=false;
+    for(let xv=0;xv<=xMAX;xv+=0.15){
+      let lo=-20,hi=70;for(let i=0;i<40;i++){const m=(lo+hi)/2;xFromRH(m,rv)<xv?lo=m:hi=m;}
+      const Tv=(lo+hi)/2;if(Tv<tMIN-1||Tv>tMAX+1){s=false;continue;}
+      const cx_=cxX(xv),cy_=cyT(Tv);if(!s){ctx.moveTo(cx_,cy_);s=true;}else ctx.lineTo(cx_,cy_);
+    }
+    ctx.stroke();ctx.globalAlpha=1;
+  });
+
+  // Sättigungslinie
+  ctx.strokeStyle='#1a1aff';ctx.lineWidth=2.8;ctx.beginPath();let ss=false;
+  for(let xv=0;xv<=xMAX;xv+=0.12){
+    let lo=-20,hi=80;for(let i=0;i<40;i++){const m=(lo+hi)/2;xFromRH(m,100)<xv?lo=m:hi=m;}
+    const Tv=(lo+hi)/2;if(Tv<tMIN-0.5||Tv>tMAX+0.5){ss=false;continue;}
+    const cx_=cxX(xv),cy_=cyT(Tv);if(!ss){ctx.moveTo(cx_,cy_);ss=true;}else ctx.lineTo(cx_,cy_);
+  }
+  ctx.stroke();
+
+  // Mischluft-Prozesslinien
+  if(appModus==='misch'&&state){
+    const{T1,x1,T2,x2,Tm,xm}=state;
+    ctx.strokeStyle='#534AB7';ctx.lineWidth=1.5;ctx.setLineDash([5,3]);ctx.globalAlpha=0.8;
+    ctx.beginPath();ctx.moveTo(cxX(x1),cyT(T1));ctx.lineTo(cxX(x2),cyT(T2));ctx.stroke();
+    ctx.setLineDash([]);ctx.globalAlpha=1;
+    if(bpState){
+      ctx.strokeStyle='#cc1111';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.globalAlpha=0.7;
+      ctx.beginPath();ctx.moveTo(cxX(xm),cyT(Tm));ctx.lineTo(cxX(bpState.x),cyT(bpState.T));ctx.stroke();
+      ctx.setLineDash([]);ctx.globalAlpha=1;
+    }
+  }
+
+  // WRG-Prozesslinien
+  if(appModus==='wrg'&&wrgState){
+    const{tAul,xAul,tZul,xZul,tAbl,xAbl}=wrgState;
+    ctx.strokeStyle='#3355bb';ctx.lineWidth=2;ctx.setLineDash([6,3]);ctx.globalAlpha=0.85;
+    ctx.beginPath();ctx.moveTo(cxX(xAul),cyT(tAul));ctx.lineTo(cxX(xZul),cyT(tZul));ctx.stroke();
+    ctx.strokeStyle='rgba(26,122,64,.7)';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.moveTo(cxX(xZul),cyT(tZul));ctx.lineTo(cxX(xAbl),cyT(tAbl));ctx.stroke();
+    ctx.setLineDash([]);ctx.globalAlpha=1;
+  }
+
+  // Energie-Box (nur Mischluft+BP)
+  if(appModus==='misch'&&state&&bpState){
+    const dh=bpState.h-state.hm,Q=state.mT*dh/3600,isH=dh>0.05,isC=dh<-0.05;
+    const bw=Math.round(pw*0.37),bh=Math.round(ph*0.13);
+    drawEnergyBox(ctx,padL+pw-bw-6,padT+ph-bh-8,bw,bh,isH,isC,Q,dark);
+  }
+
+  // ── Ende Clip-Bereich ────────────────────────────────────────────────
+  ctx.restore();
+
+  // ── Punkte (mit eigenem clip pro Punkt) ─────────────────────────────
+  const dp=(x,T,col,lbl,sub)=>{
+    const px=cxX(x),py=cyT(T);
+    if(px<padL-8||px>padL+pw+8||py<padT-8||py>padT+ph+8)return;
+    // Kreis + Kreuzlinien (geclippt)
+    ctx.save();ctx.beginPath();ctx.rect(padL,padT,pw,ph);ctx.clip();
+    ctx.beginPath();ctx.arc(px,py,7,0,2*Math.PI);ctx.fillStyle=col+'25';ctx.fill();
+    ctx.beginPath();ctx.arc(px,py,4.5,0,2*Math.PI);ctx.fillStyle=col;ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.strokeStyle=col;ctx.lineWidth=0.6;ctx.globalAlpha=0.4;ctx.setLineDash([2,2]);
+    ctx.beginPath();ctx.moveTo(padL,py);ctx.lineTo(px,py);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(px,padT+ph);ctx.lineTo(px,py);ctx.stroke();
+    ctx.setLineDash([]);ctx.globalAlpha=1;
+    ctx.restore();
+    // Labels (ungeclippt, damit sie am Rand sichtbar bleiben)
+    ctx.fillStyle=dark?'rgba(255,255,255,.9)':'rgba(0,0,0,.8)';
+    ctx.font='bold 9px -apple-system,sans-serif';ctx.textAlign='left';ctx.textBaseline='alphabetic';
+    const lx=Math.min(px+8,padL+pw-40),ly=Math.max(py-6,padT+10);
+    ctx.fillText(lbl,lx,ly);
+    ctx.font='9px -apple-system,sans-serif';
+    ctx.fillStyle=dark?'rgba(255,255,255,.5)':'rgba(0,0,0,.45)';
+    ctx.fillText(sub,Math.min(px+8,padL+pw-65),Math.max(py+4,padT+20));
+  };
+
+  // Mischluft-Punkte
+  if(appModus==='misch'&&state){
+    const{T1,x1,T2,x2,Tm,xm}=state;
+    dp(x1,T1,'#1a6fbb','A',T1.toFixed(1)+'°C | x='+x1.toFixed(2));
+    dp(x2,T2,COL_B,'B',T2.toFixed(1)+'°C | x='+x2.toFixed(2));
+    dp(xm,Tm,'#1a7a40','Mix',Tm.toFixed(1)+'°C | x='+xm.toFixed(2));
+    if(bpState) dp(bpState.x,bpState.T,'#cc1111','BP',bpState.T.toFixed(1)+'°C | x='+bpState.x.toFixed(2));
+  }
+
+  // WRG-Punkte
+  if(appModus==='wrg'&&wrgState){
+    const{tAul,xAul,tZul,xZul,tAbl,xAbl}=wrgState;
+    dp(xAul,tAul,'#1a6fbb','AUL',tAul.toFixed(1)+'°C | x='+xAul.toFixed(2));
+    dp(xZul,tZul,'#1a7a40','ZUL',tZul.toFixed(1)+'°C | x='+xZul.toFixed(2));
+    dp(xAbl,tAbl,COL_B,'ABL',tAbl.toFixed(1)+'°C | x='+xAbl.toFixed(2));
+  }
+
+  // ── Rahmen ────────────────────────────────────────────────────────────
+  ctx.strokeStyle=axC;ctx.lineWidth=1.2;ctx.strokeRect(padL,padT,pw,ph);
+
+  // X-Achse
+  ctx.fillStyle=txtC;ctx.font='10px -apple-system,sans-serif';ctx.textAlign='center';ctx.textBaseline='alphabetic';
+  for(let x=0;x<=20;x+=2){
+    const cx_=cxX(x);if(cx_<padL||cx_>padL+pw)continue;
+    ctx.beginPath();ctx.strokeStyle=axC;ctx.lineWidth=0.8;ctx.moveTo(cx_,plotBottom);ctx.lineTo(cx_,plotBottom+4);ctx.stroke();
+    ctx.fillText(x,cx_,plotBottom+13);
+  }
+  ctx.font='11px -apple-system,sans-serif';ctx.fillStyle=txtC;
+  ctx.fillText('Wassergehalt  x  [g/kg]',padL+pw/2,plotBottom+26);
+
+  // h-Achse (lila)
+  ctx.strokeStyle='#534AB7';ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.moveTo(padLh,padT);ctx.lineTo(padLh,padT+ph);ctx.stroke();
+  ctx.fillStyle='#534AB7';ctx.font='bold 10px -apple-system,sans-serif';ctx.textAlign='right';
+  hTable.forEach(({h,T:T0})=>{
+    const y=cyT(T0);if(y<padT-2||y>padT+ph+2)return;
+    ctx.beginPath();ctx.strokeStyle='#534AB7';ctx.lineWidth=0.7;ctx.moveTo(padLh,y);ctx.lineTo(padLh-4,y);ctx.stroke();
+    ctx.fillText(h,padLh-5,y+3.5);
+  });
+  ctx.save();ctx.translate(11,padT+ph/2);ctx.rotate(-Math.PI/2);
+  ctx.fillStyle='#534AB7';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='center';
+  ctx.fillText('h  [kJ/kg]',0,0);ctx.restore();
+
+  // T-Achse (dunkelrot)
+  const tAx=padLh+padLt;
+  ctx.strokeStyle='#8B0000';ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.moveTo(tAx,padT);ctx.lineTo(tAx,padT+ph);ctx.stroke();
+  ctx.fillStyle='#8B0000';ctx.font='bold 10px -apple-system,sans-serif';ctx.textAlign='right';
+  for(let T=tMIN;T<=tMAX;T+=5){
+    const y=cyT(T);if(y<padT-2||y>padT+ph+2)continue;
+    ctx.beginPath();ctx.strokeStyle='#8B0000';ctx.lineWidth=0.7;ctx.moveTo(tAx,y);ctx.lineTo(tAx-4,y);ctx.stroke();
+    ctx.fillText(T+'°',tAx-5,y+3.5);
+  }
+  ctx.save();ctx.translate(padLh+11,padT+ph/2);ctx.rotate(-Math.PI/2);
+  ctx.fillStyle='#8B0000';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='center';
+  ctx.fillText('T  [°C]',0,0);ctx.restore();
+
+  // φ- und T-Labels (geclippt)
+  ctx.save();ctx.beginPath();ctx.rect(padL,padT,pw,ph);ctx.clip();
+  ctx.font='9px -apple-system,sans-serif';
+  [10,20,30,40,50,60,70,80,90].forEach(rv=>{
+    ctx.fillStyle='#1a6fbb';ctx.globalAlpha=rv===50?0.95:0.65;
+    let bT=-999,bX=0;
+    for(let xv=.5;xv<=xMAX-.5;xv+=.5){
+      let lo=-20,hi=70;for(let i=0;i<30;i++){const m=(lo+hi)/2;xFromRH(m,rv)<xv?lo=m:hi=m;}
+      const Tv=(lo+hi)/2;if(Tv>=tMIN&&Tv<=tMAX&&Tv>bT){bT=Tv;bX=xv;}
+    }
+    const cx_=cxX(bX),cy_=cyT(bT)-4;
+    if(cx_>padL+2&&cx_<padL+pw-2&&cy_>padT+2&&cy_<padT+ph-2){ctx.textAlign='center';ctx.fillText(rv+'%',cx_,cy_);}
+    ctx.globalAlpha=1;
+  });
+  ctx.fillStyle='#8B0000';ctx.font='9px -apple-system,sans-serif';ctx.textAlign='left';ctx.globalAlpha=0.75;
+  excelData.forEach(row=>{
+    if(row.T<tMIN||row.T>tMAX)return;
+    const y=cyT(row.T);if(y<padT+2||y>padT+ph-2)return;
+    ctx.fillText(row.T+'°C',padL+pw-28,y+3.5);
+  });
+  ctx.globalAlpha=1;ctx.restore();
+
+  // Logo
+  const lw=58,lhh=20;ctx.fillStyle='#1a1aff';
+  ctx.beginPath();if(ctx.roundRect)ctx.roundRect(W-lw-3,padT+3,lw,lhh,3);else ctx.rect(W-lw-3,padT+3,lw,lhh);ctx.fill();
+  ctx.fillStyle='#FFE600';ctx.font='bold italic 12px -apple-system,sans-serif';
+  ctx.textAlign='center';ctx.fillText('by MM',W-lw/2-3,padT+15);
+
+  // Canvas-Fußzeile
+  const fY=plotBottom+padB;
+  ctx.strokeStyle=dark?'rgba(255,255,255,.12)':'rgba(0,0,0,.1)';ctx.lineWidth=0.5;
+  ctx.beginPath();ctx.moveTo(padL,fY+1);ctx.lineTo(padL+pw,fY+1);ctx.stroke();
+  ctx.fillStyle=footAccent;ctx.font='bold 13px -apple-system,sans-serif';ctx.textAlign='center';
+  ctx.fillText('www.mm-rlt.de',W/2,fY+17);
+  ctx.fillStyle=footSub;ctx.font='9px -apple-system,sans-serif';
+  ctx.fillText('Maximum Machines GmbH  \xb7  info@mm-rlt.de  \xb7  +49 1520 984 1047',W/2,fY+30);
+}
+
+// ── Betriebsmodus-State (VOR Init!) ──────────────────────────────────────
+let appModus = 'misch';
+let wrgTyp = 'sonst';
+let wrgState = null;
+
+// ── Init ──────────────────────────────────────────────────────────────────
+document.querySelectorAll('.nav-tab').forEach(b=>{b.style.setProperty('color','#ffffff','important');b.style.setProperty('background-color','#1a1aff','important');});
+setupTouch(document.getElementById('hxC'));
+updatePdisplay();updateStreamInfo(1);updateStreamInfo(2);
+// calcWRG beim Start NICHT aufrufen – nur wenn WRG-Seite aktiv
+setTimeout(drawDiagram,200);window.addEventListener('resize',()=>{view={ox:0,oy:0,scale:1};drawDiagram();});
+
+function setModus(m){
+  appModus = m;
+  // Eingabe-Buttons
+  const bM=document.getElementById('modus-misch');
+  const bW=document.getElementById('modus-wrg');
+  // Diagramm-Buttons
+  const dM=document.getElementById('diag-modus-misch');
+  const dW=document.getElementById('diag-modus-wrg');
+
+  const styleAkt13='flex:1;padding:11px 6px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;border:none;background:#1a1aff;color:#FFE600';
+  const styleInakt13M='flex:1;padding:11px 6px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;border:none;border-left:2px solid #1a1aff;background:#fff;color:#1a1aff';
+  const styleInakt13R='flex:1;padding:11px 6px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;border:none;border-right:2px solid #1a1aff;background:#fff;color:#1a1aff';
+  const styleAkt15='flex:1;padding:14px 8px;text-align:center;font-size:15px;font-weight:700;cursor:pointer;border:none;background:#1a1aff;color:#FFE600;letter-spacing:.01em';
+  const styleInakt15M='flex:1;padding:14px 8px;text-align:center;font-size:15px;font-weight:600;cursor:pointer;border:none;border-left:2.5px solid #1a1aff;background:#fff;color:#1a1aff;letter-spacing:.01em';
+  const styleInakt15R='flex:1;padding:14px 8px;text-align:center;font-size:15px;font-weight:600;cursor:pointer;border:none;border-right:2.5px solid #1a1aff;background:#fff;color:#1a1aff;letter-spacing:.01em';
+
+  if(m==='misch'){
+    if(bM) bM.style.cssText=styleAkt13;
+    if(bW) bW.style.cssText=styleInakt13M;
+    if(dM) dM.style.cssText=styleAkt15;
+    if(dW) dW.style.cssText=styleInakt15M;
+    showPageById('eingabe');
+  } else {
+    if(bW) bW.style.cssText=styleAkt13;
+    if(bM) bM.style.cssText=styleInakt13R;
+    if(dW) dW.style.cssText=styleAkt15;
+    if(dM) dM.style.cssText=styleInakt15R;
+    showPageById('wrg');
+  }
+}
+function showPageById(pid){
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(e=>e.classList.remove('active'));
+  const pg=document.getElementById('page-'+pid);
+  if(pg) pg.classList.add('active');
+  // Nav-Tab aktivieren
+  document.querySelectorAll('.nav-tab').forEach(t=>{if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+pid+"'"))t.classList.add('active');});
+  if(pid==='diagramm') setTimeout(drawDiagram,60);
+}
+
+function setWRGTyp(typ){
+  wrgTyp=typ;
+  const bK=document.getElementById('wrg-typ-kvs');
+  const bS=document.getElementById('wrg-typ-sonst');
+  const base='flex:1;padding:8px;font-size:12px;cursor:pointer;border:none;';
+  if(typ==='kvs'){
+    bK.style.cssText=base+'border-right:0.5px solid #3355bb;background:#3355bb;color:#fff;font-weight:700';
+    bS.style.cssText=base+'background:#fff;color:#3355bb;font-weight:600';
+  } else {
+    bS.style.cssText=base+'background:#3355bb;color:#fff;font-weight:700';
+    bK.style.cssText=base+'border-right:0.5px solid #3355bb;background:#fff;color:#3355bb;font-weight:600';
+  }
+  const lbl=document.getElementById('erp-label-bar');
+  if(lbl) lbl.textContent=typ==='kvs'?'ErP min. 68% (KVS)':'ErP min. 73% (Sonstige)';
+  calcWRG();
+}
+
+function getErpMin(){ return wrgTyp === 'kvs' ? 68 : 73; }
+
+function checkWRGWarn(etaTPct){
+  const minVal=getErpMin();
+  const typLabel=wrgTyp==='kvs'?'KVS-Gerät':'Sonstige Geräte';
+  const wb=document.getElementById('wrg-warn-box');
+  const dw=document.getElementById('diag-wrg-warn');
+  const valEl=document.getElementById('eta-t-val');
+  const inpEl=document.getElementById('eta-t');
+  const slEl=document.getElementById('eta-t-slider');
+  if(etaTPct<minVal){
+    const msg='⚠ η_T='+etaTPct.toFixed(0)+'% unter ErP-Mindest für '+typLabel+' (min. '+minVal+'%). Berechnung erfolgt trotzdem.';
+    if(wb){wb.style.cssText='margin-top:8px;background:#fff3cd;border:0.5px solid #ffaa00;border-radius:8px;padding:10px 12px;font-size:12px;color:#856404';wb.innerHTML=msg;}
+    if(dw){dw.style.display='block';dw.textContent=msg;}
+    // Rot einfärben
+    if(valEl){valEl.style.color='#cc2200';valEl.style.fontWeight='700';}
+    if(inpEl){inpEl.style.background='#ffe5e5';inpEl.style.color='#cc2200';inpEl.style.borderColor='#ff9999';}
+    if(slEl){slEl.style.accentColor='#cc2200';}
+  } else {
+    if(wb){wb.style.cssText='';wb.innerHTML='';}
+    if(dw){dw.style.display='none';dw.textContent='';}
+    // Grün einfärben
+    if(valEl){valEl.style.color='#1a7a40';valEl.style.fontWeight='700';}
+    if(inpEl){inpEl.style.background='#eafaf1';inpEl.style.color='#1a7a40';inpEl.style.borderColor='#7fdca4';}
+    if(slEl){slEl.style.accentColor='#1a7a40';}
+  }
+}
+// ── WRG/FRG ────────────────────────────────────────────────────────────────
+function syncEta(which){
+  if(which==='t'){const v=document.getElementById('eta-t-slider').value;document.getElementById('eta-t').value=v;document.getElementById('eta-t-val').textContent=v+'%';document.getElementById('erp-t-marker').style.left=v+'%';}
+  else if(which==='t-inp'){let v=parseFloat(document.getElementById('eta-t').value)||0;v=Math.max(0,Math.min(95,v));document.getElementById('eta-t-slider').value=v;document.getElementById('eta-t-val').textContent=v+'%';document.getElementById('erp-t-marker').style.left=v+'%';}
+  else if(which==='x'){const v=document.getElementById('eta-x-slider').value;document.getElementById('eta-x').value=v;document.getElementById('eta-x-val').textContent=v+'%';}
+  else if(which==='x-inp'){let v=parseFloat(document.getElementById('eta-x').value)||0;v=Math.max(0,Math.min(95,v));document.getElementById('eta-x-slider').value=v;document.getElementById('eta-x-val').textContent=v+'%';}
+}
+
+function calcWRG(){
+  const p=101325;
+  const vAul=parseFloat(document.getElementById('v-aul').value)||0;
+  const tAul=parseFloat(document.getElementById('t-aul').value);
+  const xAul=parseFloat(document.getElementById('x-aul').value);
+  const tAbl=parseFloat(document.getElementById('t-abl').value);
+  const xAbl=parseFloat(document.getElementById('x-abl').value);
+  const etaT=(parseFloat(document.getElementById('eta-t').value)||0)/100;
+  const etaX=(parseFloat(document.getElementById('eta-x').value)||0)/100;
+
+  // Live-Info Eingabefelder
+  if(!isNaN(tAul)&&!isNaN(xAul)&&xAul>=0){
+    document.getElementById('rh-aul-calc').value=rhFromX(tAul,xAul,p).toFixed(1);
+    document.getElementById('h-aul-si').innerHTML=enthalpie(tAul,xAul).toFixed(2)+'<span class="su"> kJ/kg</span>';
+    const tdA=taupunkt(xAul,p);document.getElementById('td-aul-si').innerHTML=(tdA!==null?tdA.toFixed(1):'—')+'<span class="su"> °C</span>';
+  }
+  if(!isNaN(tAbl)&&!isNaN(xAbl)&&xAbl>=0){
+    document.getElementById('h-abl-si').innerHTML=enthalpie(tAbl,xAbl).toFixed(2)+'<span class="su"> kJ/kg</span>';
+    document.getElementById('rh-abl-si').innerHTML=rhFromX(tAbl,xAbl,p).toFixed(1)+'<span class="su"> %</span>';
+  }
+
+  if([vAul,tAul,xAul,tAbl,xAbl].some(v=>isNaN(v))){
+    const wb=document.getElementById('wrg-warn-box');
+    if(wb){wb.style.cssText='margin-top:8px;background:#fce8e8;border:0.5px solid #f09595;border-radius:8px;padding:10px 12px;font-size:12px;color:#a32d2d';wb.innerHTML='Bitte alle Felder ausfüllen.';}
+    return;
+  }
+
+  const tZul=tAul+etaT*(tAbl-tAul);
+  const xZul=xAul+etaX*(xAbl-xAul);
+  const hAul=enthalpie(tAul,xAul);
+  const hAbl=enthalpie(tAbl,xAbl);
+  const hZul=enthalpie(tZul,xZul);
+  const rhZul=rhFromX(tZul,xZul,p);
+  const tdZul=taupunkt(xZul,p);
+  const rhoAul=dichte(tAul,xAul,p);
+  const mDot=vAul*rhoAul;
+  const qWRG=mDot*(hZul-hAul)/3600;   // kW: rückgewonnene Energie
+  const qOhne=mDot*(hAbl-hAul)/3600;  // kW: ohne WRG erforderlich
+  const qRest=mDot*(hAbl-hZul)/3600;  // kW: noch erforderlich nach WRG
+  const dT=tZul-tAul, dx=xZul-xAul;
+
+  // Ergebnis füllen
+  document.getElementById('r-h-zul').textContent=hZul.toFixed(2);
+  document.getElementById('r-t-zul').innerHTML=tZul.toFixed(2)+'<span class="us"> °C</span>';
+  document.getElementById('r-x-zul').innerHTML=xZul.toFixed(3)+'<span class="us"> g/kg</span>';
+  document.getElementById('r-rh-zul').innerHTML=rhZul.toFixed(1)+'<span class="us"> %</span>';
+  document.getElementById('r-td-zul').innerHTML=(tdZul!==null?tdZul.toFixed(1):'—')+'<span class="su"> °C</span>';
+  document.getElementById('r-q-wrg').textContent=qWRG.toFixed(2)+' kW';
+  document.getElementById('r-dt-wrg').textContent=(dT>=0?'+':'')+dT.toFixed(2)+' K';
+  document.getElementById('r-dx-frg').textContent=(dx>=0?'+':'')+dx.toFixed(3)+' g/kg';
+  document.getElementById('r-mdot').textContent=mDot.toFixed(1)+' kg/h';
+
+  // Energie-Box
+  const isHeat=qRest>0.05,isCool=qRest<-0.05;
+  const dk=matchMedia('(prefers-color-scheme:dark)').matches;
+  const ebox=document.getElementById('wrg-e-box');
+  const ebadge=document.getElementById('wrg-e-badge');
+  const ekw=document.getElementById('wrg-e-kw');
+  const ehint=document.getElementById('wrg-e-hint');
+  const elbl=document.getElementById('wrg-e-label');
+  if(isHeat){ebox.className='energy-box card-heat';ebadge.className='badge badge-heat';ebadge.textContent='🔥 Nachheizung';elbl.textContent='Restleistung Heizung';ekw.innerHTML=Math.abs(qRest).toFixed(2)+'<span class="energy-unit">kW</span>';ekw.style.color=dk?'#ff8855':'#cc4400';ehint.innerHTML='Heizregister nach WRG erforderlich';ehint.style.color='#cc4400';}
+  else if(isCool){ebox.className='energy-box card-cool';ebadge.className='badge badge-cool';ebadge.textContent='❄ Nachkühlung';elbl.textContent='Restleistung Kühlung';ekw.innerHTML=Math.abs(qRest).toFixed(2)+'<span class="energy-unit">kW</span>';ekw.style.color=dk?'#55aaff':'#0066cc';ehint.innerHTML='Kühlregister nach WRG erforderlich';ehint.style.color='#0066cc';}
+  else{ebox.className='energy-box card-neutral';ebadge.className='badge badge-neutral';ebadge.textContent='✓ Ausgeglichen';elbl.textContent='Kein Restbedarf';ekw.innerHTML='≈ 0<span class="energy-unit">kW</span>';ekw.style.color=dk?'#aaa':'#444';ehint.textContent='WRG deckt den Bedarf vollständig ab';ehint.style.color='#1a7a40';}
+  const pct=Math.round(Math.abs(qWRG)/Math.max(0.01,Math.abs(qOhne))*100);
+  document.getElementById('wrg-e-ohne').textContent=Math.abs(qOhne).toFixed(2)+' kW';
+  document.getElementById('wrg-e-einspar').textContent=Math.abs(qWRG).toFixed(2)+' kW ('+pct+'%)';
+
+  // Vergleich
+  document.getElementById('cmp-aul').innerHTML='<b>T:</b> '+tAul.toFixed(1)+'°C<br><b>x:</b> '+xAul.toFixed(2)+' g/kg<br><b>h:</b> '+hAul.toFixed(1)+' kJ/kg';
+  document.getElementById('cmp-zul').innerHTML='<b>T:</b> '+tZul.toFixed(1)+'°C<br><b>x:</b> '+xZul.toFixed(3)+' g/kg<br><b>h:</b> '+hZul.toFixed(1)+' kJ/kg';
+  document.getElementById('cmp-abl').innerHTML='<b>T:</b> '+tAbl.toFixed(1)+'°C<br><b>x:</b> '+xAbl.toFixed(2)+' g/kg<br><b>h:</b> '+hAbl.toFixed(1)+' kJ/kg';
+
+  // Warnungen – alle zusammen
+  const warnList=[];
+  const minEta=getErpMin();
+  if(etaT*100<minEta) warnList.push('⚠ η_T='+(etaT*100).toFixed(0)+'% < ErP-Mindestanforderung '+(wrgTyp==='kvs'?'KVS':'Sonstige')+' (min. '+minEta+'%) – Berechnung erfolgt trotzdem.');
+  if(rhZul>95) warnList.push('⚠ Zuluft nahe Sättigung – Kondensationsgefahr!');
+  if(tZul<0) warnList.push('⚠ Zulufttemperatur unter 0°C – Frostschutz prüfen!');
+  if(tZul>40) warnList.push('⚠ Zulufttemperatur über 40°C – Sommer-Bypass prüfen!');
+  const wb2=document.getElementById('wrg-warn-box');
+  if(wb2){
+    if(warnList.length){wb2.style.cssText='margin-top:8px;background:#fff3cd;border:0.5px solid #ffaa00;border-radius:8px;padding:10px 12px;font-size:12px;color:#856404';wb2.innerHTML=warnList.join('<br>');}
+    else{wb2.style.cssText='';wb2.innerHTML='';}
+  }
+  // Diagramm-Warn
+  const dw2=document.getElementById('diag-wrg-warn');
+  if(dw2){if(warnList.length){dw2.style.display='block';dw2.innerHTML=warnList.join('<br>');}else{dw2.style.display='none';dw2.innerHTML='';}}
+  // wrgState für Diagramm speichern
+  wrgState={tAul,xAul,tZul,xZul,tAbl,xAbl,hAul,hZul,hAbl,mDot,etaT,etaX};
+  appModus='wrg';updateDiagInfo();
+  document.getElementById('wrg-result').style.display='block';
+  // Sanft zum Ergebnis scrollen
+  setTimeout(()=>{const el=document.getElementById('wrg-result');if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});},80);
+}
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>

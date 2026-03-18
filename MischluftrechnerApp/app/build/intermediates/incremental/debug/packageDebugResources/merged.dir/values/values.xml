@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="mm_blue">#1A1AFF</color>
+    <color name="mm_yellow">#FFE600</color>
+    <color name="white">#FFFFFF</color>
+    <string name="app_name">Mischluftrechner</string>
+    <style name="Theme.Mischluft" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">#1A1AFF</item>
+        <item name="android:statusBarColor">#1A1AFF</item>
+        <item name="android:navigationBarColor">#1A1AFF</item>
+    </style>
+</resources>

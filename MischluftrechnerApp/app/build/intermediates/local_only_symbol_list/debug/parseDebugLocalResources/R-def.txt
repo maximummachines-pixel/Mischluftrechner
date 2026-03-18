@@ -1,0 +1,11 @@
+R_DEF: Internal format may change without notice
+local
+color mm_blue
+color mm_yellow
+color white
+id webview
+layout activity_main
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style Theme.Mischluft
