@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1a1aff">
+<meta name="description" content="RLT-Vergleichsrechner – Datenblatt-Analyse & Variantenvergleich by MM">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RLT-Vergleich">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>RLT-Vergleichsrechner – by MM</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fff;--bg2:#f4f4f2;--text:#111;--text2:#555;--text3:#888;--border:rgba(0,0,0,.12);--border2:rgba(0,0,0,.22);--r:10px;--rl:14px;
+  --cA:#1a3a6e;--cB:#3a1a6e;--cbA:#D6EAFF;--cbB:#EDE8FF;--cbAb:#7FBFFF;--cbBb:#9980FF}
+@media(prefers-color-scheme:dark){:root{--bg:#1c1c1e;--bg2:#2c2c2e;--text:#f2f2f7;--text2:#aeaeb2;--text3:#636366;--border:rgba(255,255,255,.10);--border2:rgba(255,255,255,.20);--cbA:#1a3a5c;--cbB:#1a1040;--cbAb:#2a5a8c;--cbBb:#6655cc}}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.5}
+.app{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.app-header{background:#1a1aff;padding:13px 16px 11px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-title{font-size:18px;font-weight:700;color:#FFE600;letter-spacing:.01em;line-height:1.2}
+.header-sub{font-size:10px;color:rgba(255,255,255,.72);margin-top:2px;font-style:italic}
+.header-logo{background:#FFE600;color:#1a1aff;font-size:14px;font-weight:800;font-style:italic;padding:5px 13px;border-radius:20px;flex-shrink:0}
+.nav-tabs{display:flex;background:#1a1aff;border-top:0.5px solid rgba(255,255,255,.18);overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:62px;z-index:99}
+.nav-tab{flex:1;padding:8px 3px;text-align:center;font-size:10px;cursor:pointer;border:none!important;background:#1a1aff!important;color:#fff!important;border-bottom:2.5px solid transparent!important;white-space:nowrap;-webkit-appearance:none;appearance:none;outline:none}
+.nav-tab.active{color:#FFE600!important;font-weight:700;border-bottom:2.5px solid #FFE600!important}
+.page-wrap{padding:12px 10px;flex:1}
+.page{display:none}.page.active{display:block}
+.page-footer{text-align:center;padding:14px 0 6px;margin-top:4px;border-top:0.5px solid var(--border)}
+.page-footer a{font-size:13px;font-weight:700;color:#1a1aff;text-decoration:none}
+@media(prefers-color-scheme:dark){.page-footer a{color:#7a9fff}}
+/* Cards */
+.card{border-radius:var(--rl);padding:14px;margin-bottom:10px;border:0.5px solid var(--border)}
+.card-white{background:var(--bg)}
+.card-gray{background:#E8E8E8;border-color:#CCC}
+.card-A{background:var(--cbA);border-color:var(--cbAb)}
+.card-B{background:var(--cbB);border-color:var(--cbBb)}
+.card-green{background:#D6F5E3;border-color:#7FDCA4}
+.card-result{background:var(--bg2);border-color:var(--border2)}
+@media(prefers-color-scheme:dark){.card-gray{background:#333;border-color:#555}.card-green{background:#1a4a2e;border-color:#2a7a4e}}
+/* Badges */
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px}
+.badge-A{background:#1a3a6e;color:#fff}.badge-B{background:#3a1a6e;color:#fff}
+.badge-p{background:#666;color:#fff}.badge-ai{background:#0077AA;color:#fff}
+.badge-ok{background:#1a7a40;color:#fff}.badge-warn{background:#cc4400;color:#fff}
+/* Fields */
+.field{margin-bottom:9px}.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:11px;color:var(--text2);margin-bottom:3px;font-weight:500}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.unit-s{font-size:9px;color:var(--text3);font-weight:400}
+input[type=number],input[type=text]{width:100%;border-radius:var(--r);padding:8px 10px;font-size:14px;color:var(--text);outline:none;-moz-appearance:textfield;border:0.5px solid var(--border2);background:var(--bg)}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]:focus,input[type=text]:focus{border-color:#1a1aff;box-shadow:0 0 0 2px rgba(26,26,255,.12)}
+textarea{width:100%;border-radius:var(--r);padding:8px 10px;font-size:13px;color:var(--text);border:0.5px solid var(--border2);background:var(--bg);resize:vertical;min-height:80px;outline:none;font-family:inherit}
+textarea:focus{border-color:#1a1aff;box-shadow:0 0 0 2px rgba(26,26,255,.12)}
+.inp-A{background:#EBF5FF;color:#003366}.inp-B{background:#F0EBFF;color:#2a006e}
+@media(prefers-color-scheme:dark){.inp-A{background:#0d2a45;color:#9ecfff;border-color:#2a5a8c}.inp-B{background:#1a0d40;color:#c0a0ff;border-color:#6655cc}}
+/* Tabs innerhalb */
+.mode-tab-row{display:flex;gap:0;border-radius:var(--r);overflow:hidden;border:0.5px solid var(--border2);margin-bottom:10px}
+.ptab{flex:1;padding:7px;text-align:center;font-size:11px;cursor:pointer;border:none;background:var(--bg);color:var(--text2);font-weight:600}
+.ptab.active{background:#1a1aff;color:#FFE600}
+/* Buttons */
+.calc-btn{width:100%;background:#1a1aff;color:#FFE600;border:none;border-radius:var(--r);padding:13px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;transition:opacity .15s}
+.calc-btn:active{opacity:.85}
+.btn-secondary{width:100%;background:var(--bg2);color:var(--text);border:0.5px solid var(--border2);border-radius:var(--r);padding:10px;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px}
+.btn-secondary:active{opacity:.7}
+/* Upload-Zone */
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--rl);padding:20px;text-align:center;cursor:pointer;background:var(--bg2);transition:border-color .2s,background .2s;margin-bottom:10px}
+.upload-zone:hover,.upload-zone.drag{border-color:#1a1aff;background:#EBF5FF}
+@media(prefers-color-scheme:dark){.upload-zone:hover,.upload-zone.drag{background:#0d2a45}}
+.upload-zone .icon{font-size:32px;margin-bottom:6px}
+.upload-zone .lbl{font-size:13px;font-weight:600;color:var(--text2)}
+.upload-zone .sub{font-size:11px;color:var(--text3);margin-top:3px}
+.upload-preview{width:100%;border-radius:var(--r);margin-bottom:8px;max-height:220px;object-fit:contain;border:0.5px solid var(--border)}
+/* AI-Ausgabe */
+.ai-result{background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--rl);padding:12px;font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:10px;white-space:pre-wrap}
+.ai-result.loading{color:#1a1aff;font-style:italic}
+/* Betriebszustand-Tabs */
+.bz-tabs{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto}
+.bz-tab{padding:6px 12px;font-size:11px;font-weight:700;border-radius:20px;cursor:pointer;border:0.5px solid var(--border2);background:var(--bg2);color:var(--text2);white-space:nowrap}
+.bz-tab.active{background:#1a1aff;color:#FFE600;border-color:#1a1aff}
+/* Vergleichstabelle */
+.vgl-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px}
+.vgl-table th{padding:7px 6px;text-align:center;font-weight:700;font-size:11px;border-bottom:1.5px solid var(--border2)}
+.vgl-table td{padding:6px 6px;border-bottom:0.5px solid var(--border);vertical-align:middle}
+.vgl-table td:first-child{font-size:11px;color:var(--text2);font-weight:500}
+.vgl-table td:not(:first-child){text-align:right;font-weight:600;font-size:13px}
+.th-A{color:#1a3a6e}.th-B{color:#3a1a6e}
+@media(prefers-color-scheme:dark){.th-A{color:#7ab0ff}.th-B{color:#c0a0ff}}
+.cell-better{color:#1a7a40;font-weight:700}.cell-worse{color:#cc2200}
+@media(prefers-color-scheme:dark){.cell-better{color:#7fdca4}.cell-worse{color:#ff8866}}
+/* Balkendiagramm */
+.bar-cmp{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.bar-cmp .blbl{font-size:10px;color:var(--text2);width:80px;flex-shrink:0;text-align:right}
+.bar-cmp .bwrap{flex:1;background:rgba(0,0,0,.08);border-radius:3px;height:14px;overflow:hidden}
+.bar-cmp .bfill{height:100%;border-radius:3px;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;font-size:9px;font-weight:700;color:#fff;transition:width .5s}
+.bfA{background:#1a6fbb}.bfB{background:#6633CC}
+@media(prefers-color-scheme:dark){.bfA{background:#3a9fff}.bfB{background:#9966ff}}
+/* Einsparung */
+.savings-box{background:#D6F5E3;border:0.5px solid #7FDCA4;border-radius:var(--rl);padding:12px;margin-bottom:10px}
+@media(prefers-color-scheme:dark){.savings-box{background:#1a4a2e;border-color:#2a7a4e}}
+.savings-box .sv-title{font-size:12px;font-weight:700;color:#1a5c35;margin-bottom:6px}
+@media(prefers-color-scheme:dark){.savings-box .sv-title{color:#7fdca4}}
+.savings-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sv-item{background:rgba(26,122,64,.12);border-radius:8px;padding:8px 10px}
+.sv-item .sv-lbl{font-size:10px;color:var(--text2);margin-bottom:2px}
+.sv-item .sv-val{font-size:16px;font-weight:700;color:#1a7a40}
+@media(prefers-color-scheme:dark){.sv-item .sv-val{color:#7fdca4}}
+/* Sektion-Header */
+.sec-hd{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 6px;border-bottom:0.5px solid var(--border);padding-bottom:4px}
+/* Info-grid */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.info-cell{display:flex;justify-content:space-between;padding:4px 6px;border-bottom:0.5px solid rgba(0,0,0,.07);font-size:11px}
+.info-cell:nth-child(odd){border-right:0.5px solid rgba(0,0,0,.07)}
+.ik{color:var(--text2)}.iv{font-weight:600;text-align:right;margin-left:4px}
+/* Error */
+.error-box{background:#FCEBEB;border:0.5px solid #F09595;border-radius:var(--r);padding:10px;font-size:12px;color:#A32D2D;margin-bottom:8px;display:none}
+/* Spinner */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(26,26,255,.2);border-top-color:#1a1aff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Platzhalter */
+.placeholder{text-align:center;color:var(--text2);font-size:13px;padding:30px 0}
+/* Hint */
+.hint{font-size:11px;color:var(--text3);margin-top:3px;font-style:italic}
+/* Ladeoverlay */
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.loading-overlay .lo-card{background:var(--bg);border-radius:16px;padding:24px 28px;text-align:center;max-width:280px;width:90%}
+.loading-overlay .lo-title{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.loading-overlay .lo-sub{font-size:12px;color:var(--text2);margin-bottom:14px}
+.big-spinner{width:44px;height:44px;border:4px solid rgba(26,26,255,.2);border-top-color:#1a1aff;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+.lo-steps div{font-size:11px;color:var(--text3);margin:3px 0;text-align:left}
+.lo-steps .lo-active{color:#1a1aff;font-weight:600}
+input[type=file]{display:none}
+</style>
+<!-- PDF.js für PDF-Rendering im Browser -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+<div class="app">
+<header class="app-header">
+  <div>
+    <div class="header-title">RLT-Vergleichsrechner</div>
+    <div class="header-sub">Datenblatt-Analyse &amp; Variantenvergleich – by MM</div>
+  </div>
+  <div class="header-logo">by MM</div>
+</header>
+<nav class="nav-tabs">
+  <button class="nav-tab active" onclick="showPage('scan',this)">📷 Scan</button>
+  <button class="nav-tab" onclick="showPage('varA',this)">Variante A</button>
+  <button class="nav-tab" onclick="showPage('varB',this)">Variante B</button>
+  <button class="nav-tab" onclick="showPage('vergleich',this)">Vergleich</button>
+</nav>
+<div class="page-wrap">
+
+<!-- ══════════════════════════════════════════════════════
+     SEITE 1: SCAN / KI-ANALYSE
+══════════════════════════════════════════════════════ -->
+<div class="page active" id="page-scan">
+
+  <div class="card card-gray" style="margin-bottom:10px">
+    <span class="badge badge-ai">KI-Datenblatt-Analyse</span>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Foto oder Scan eines Datenblatts / Leistungsverzeichnisses hochladen. Die KI extrahiert automatisch alle relevanten Kennwerte und überträgt sie in Variante A oder B.</p>
+    <div class="mode-tab-row">
+      <button class="ptab active" id="scan-ziel-A" onclick="setScanZiel('A',this)">→ Variante A</button>
+      <button class="ptab" id="scan-ziel-B" onclick="setScanZiel('B',this)">→ Variante B</button>
+    </div>
+  </div>
+
+  <!-- Upload-Zone -->
+  <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+    <div class="icon">📄</div>
+    <div class="lbl">Datenblatt / Leistungsverzeichnis</div>
+    <div class="sub">Tippen zum Auswählen · Foto · PDF (mehrseitig) · Screenshot</div>
+  </div>
+  <input type="file" id="file-input" accept="image/*,application/pdf" onchange="handleFileSelect(event)">
+
+  <img id="upload-preview" class="upload-preview" style="display:none" alt="Vorschau">
+
+  <!-- PDF-Seitennavigation (nur bei PDFs sichtbar) -->
+  <div id="pdf-nav" style="display:none;margin-bottom:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border-radius:var(--r);padding:8px 12px;border:0.5px solid var(--border2)">
+      <button class="btn-secondary" style="width:auto;margin:0;padding:6px 14px;font-size:13px" onclick="pdfChangePage(-1)">‹ Zurück</button>
+      <span style="font-size:12px;font-weight:600;color:var(--text2)">
+        Seite <span id="pdf-page-cur">1</span> von <span id="pdf-page-total">1</span>
+      </span>
+      <button class="btn-secondary" style="width:auto;margin:0;padding:6px 14px;font-size:13px" onclick="pdfChangePage(1)">Weiter ›</button>
+    </div>
+    <div class="hint" style="text-align:center;margin-top:4px">Wählen Sie die Seite mit den relevanten Kennwerten</div>
+  </div>
+
+  <div id="scan-actions" style="display:none">
+    <button class="calc-btn" onclick="analyzeImage()">
+      <span id="ai-spinner" class="spinner" style="display:none"></span>
+      KI-Analyse starten ›
+    </button>
+    <button class="btn-secondary" onclick="clearScan()">✕ Bild entfernen</button>
+  </div>
+
+  <!-- Kurzanleitung -->
+  <div class="card card-white" style="margin-bottom:10px;border-left:3px solid #1a1aff">
+    <div style="font-size:12px;font-weight:700;margin-bottom:6px;color:#1a1aff">So funktioniert es</div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.9">
+      <b>1.</b> API-Key eingeben (einmalig) <a href="https://console.anthropic.com" target="_blank" style="color:#1a1aff">→ console.anthropic.com</a><br>
+      <b>2.</b> Foto oder PDF eines Datenblatts hochladen<br>
+      <b>3.</b> „KI-Analyse starten" – Claude liest alle Kennwerte aus<br>
+      <b>4.</b> Werte in Variante A oder B übernehmen<br>
+      <b>5.</b> Variante B manuell ergänzen → Vergleich anzeigen
+    </div>
+  </div>
+
+  <!-- API-Key Eingabe -->
+  <div class="card card-white" id="api-key-card">
+    <span class="badge badge-p">Anthropic API-Key</span>
+    <div class="field">
+      <label>API-Key <span class="unit-s">(im Browser gespeichert · wird nur für Ihre Analysen an Anthropic gesendet)</span></label>
+      <input type="password" id="api-key" placeholder="sk-ant-..." oninput="saveApiKey()">
+    </div>
+    <div class="hint">Kostenpflichtig: ~0,01–0,05 € pro Analyse · <a href="https://console.anthropic.com" target="_blank" style="color:#1a1aff">console.anthropic.com</a></div>
+  </div>
+
+  <!-- KI-Ergebnis -->
+  <div id="ai-result-wrap" style="display:none">
+    <div class="sec-hd">KI-Extraktion</div>
+    <div class="ai-result" id="ai-result-text"></div>
+    <button class="calc-btn" style="background:#1a7a40" onclick="applyAiResult()">
+      Werte in Variante <span id="apply-ziel-lbl">A</span> übernehmen ›
+    </button>
+    <button class="btn-secondary" onclick="document.getElementById('ai-result-wrap').style.display='none'">Verwerfen</button>
+  </div>
+
+  <div class="error-box" id="scan-error"></div>
+
+  <!-- Lokale Server-Anleitung (erscheint nur wenn file:// erkannt) -->
+  <div id="local-server-hint" style="display:none" class="card" style="background:#FFF8E6;border:1.5px solid #FFBB33;margin-bottom:10px">
+    <div style="font-size:13px;font-weight:700;color:#885500;margin-bottom:8px">🖥 Lokaler Start nötig</div>
+    <div style="font-size:12px;color:#664400;line-height:1.8">
+      <b>Windows:</b> <code style="background:#fff;padding:2px 6px;border-radius:4px;font-size:11px">start.bat</code> doppelklicken<br>
+      <b>Mac:</b> <code style="background:#fff;padding:2px 6px;border-radius:4px;font-size:11px">start.command</code> doppelklicken<br>
+      <b>Alternativ (Terminal):</b><br>
+      <code style="background:#fff;padding:4px 8px;border-radius:4px;font-size:11px;display:block;margin-top:4px">cd [Ordner] &amp;&amp; python3 -m http.server 8765</code>
+      <div style="margin-top:6px">Dann im Browser öffnen: <b>http://localhost:8765</b></div>
+    </div>
+  </div>
+
+  <!-- Manuelle Hinweise -->
+  <div class="card card-white" style="margin-top:6px">
+    <div class="sec-hd" style="margin-top:0">Was die KI erkennt</div>
+    <div class="info-grid">
+      <div class="info-cell"><span class="ik">Luftvolumenstrom</span><span class="iv">m³/h</span></div>
+      <div class="info-cell"><span class="ik">WRG-Wirkungsgrad η_T/η_x</span><span class="iv">%</span></div>
+      <div class="info-cell"><span class="ik">Ventilatorleistung</span><span class="iv">kW</span></div>
+      <div class="info-cell"><span class="ik">Heizleistung</span><span class="iv">kW</span></div>
+      <div class="info-cell"><span class="ik">Kälteleistung</span><span class="iv">kW</span></div>
+      <div class="info-cell"><span class="ik">COP / EER</span><span class="iv">—</span></div>
+      <div class="info-cell"><span class="ik">Druckverlust</span><span class="iv">Pa</span></div>
+      <div class="info-cell"><span class="ik">Schallleistung</span><span class="iv">dB(A)</span></div>
+      <div class="info-cell"><span class="ik">SFP-Wert</span><span class="iv">W/(m³/h)</span></div>
+      <div class="info-cell"><span class="ik">Jahresenergiebedarf</span><span class="iv">kWh/a</span></div>
+    </div>
+  </div>
+
+  <div class="page-footer"><a href="https://www.mm-rlt.de" target="_blank">www.mm-rlt.de</a></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SEITE 2: VARIANTE A
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-varA">
+  <div id="varA-content">
+    <div class="card card-A">
+      <span class="badge badge-A">Variante A – Referenz / Datenblatt</span>
+      <div class="field">
+        <label>Bezeichnung / Gerätename</label>
+        <input type="text" class="inp-A" id="A-name" placeholder="z.B. Hersteller XY Typ 1234" oninput="onVarChange()">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Luftvolumenstrom <span class="unit-s">m³/h</span></label>
+          <input type="number" class="inp-A" id="A-v" value="" step="100" min="0" inputmode="decimal" oninput="onVarChange()">
+        </div>
+        <div class="field">
+          <label>WRG η_T <span class="unit-s">%</span></label>
+          <input type="number" class="inp-A" id="A-eta" value="" step="1" min="0" max="100" inputmode="decimal" oninput="onVarChange()">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>SFP-Wert <span class="unit-s">W/(m³/h)</span></label>
+          <input type="number" class="inp-A" id="A-sfp" value="" step="0.01" min="0" inputmode="decimal" oninput="onVarChange()">
+        </div>
+        <div class="field">
+          <label>Druckverlust ges. <span class="unit-s">Pa</span></label>
+          <input type="number" class="inp-A" id="A-dp" value="" step="10" min="0" inputmode="decimal" oninput="onVarChange()">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Schallleistung <span class="unit-s">dB(A)</span></label>
+          <input type="number" class="inp-A" id="A-lw" value="" step="1" min="0" inputmode="decimal" oninput="onVarChange()">
+        </div>
+        <div class="field">
+          <label>Filterklasse</label>
+          <input type="text" class="inp-A" id="A-filter" placeholder="z.B. ePM1 55%" oninput="onVarChange()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Betriebszustände -->
+    <div class="bz-tabs">
+      <button class="bz-tab active" onclick="setBzTab('A','winter',this)">❄ Winter</button>
+      <button class="bz-tab" onclick="setBzTab('A','sommer',this)">☀ Sommer</button>
+      <button class="bz-tab" onclick="setBzTab('A','jahres',this)">📅 Jahresmittel</button>
+      <button class="bz-tab" onclick="setBzTab('A','uebergang',this)">🌿 Übergang</button>
+    </div>
+
+    <!-- Winter -->
+    <div class="bz-panel card card-white" id="A-panel-winter">
+      <div class="sec-hd" style="margin-top:0">❄ Winterauslegung</div>
+      <div class="field-row">
+        <div class="field"><label>Außentemp. <span class="unit-s">°C</span></label>
+          <input type="number" class="inp-A" id="A-w-tout" placeholder="-12" step="0.5" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Zulufttemp. <span class="unit-s">°C</span></label>
+          <input type="number" class="inp-A" id="A-w-tzul" placeholder="20" step="0.5" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Heizleistung <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-A" id="A-w-qh" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Ventilator-P <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-A" id="A-w-pv" placeholder="0" step="0.01" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>WP-Strom <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-A" id="A-w-pwp" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>COP Heizung</label>
+          <input type="number" class="inp-A" id="A-w-cop" placeholder="—" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+    </div>
+
+    <!-- Sommer -->
+    <div class="bz-panel card card-white" id="A-panel-sommer" style="display:none">
+      <div class="sec-hd" style="margin-top:0">☀ Sommerauslegung</div>
+      <div class="field-row">
+        <div class="field"><label>Außentemp. <span class="unit-s">°C</span></label>
+          <input type="number" class="inp-A" id="A-s-tout" placeholder="32" step="0.5" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Zulufttemp. <span class="unit-s">°C</span></label>
+          <input type="number" class="inp-A" id="A-s-tzul" placeholder="22" step="0.5" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Kälteleistung <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-A" id="A-s-qc" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Ventilator-P <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-A" id="A-s-pv" placeholder="0" step="0.01" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>KM-Strom <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-A" id="A-s-pkm" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>EER Kältemasch.</label>
+          <input type="number" class="inp-A" id="A-s-eer" placeholder="—" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+    </div>
+
+    <!-- Jahresmittel -->
+    <div class="bz-panel card card-white" id="A-panel-jahres" style="display:none">
+      <div class="sec-hd" style="margin-top:0">📅 Jahresmittelbetrieb</div>
+      <div class="field-row">
+        <div class="field"><label>Strom Ventilatoren <span class="unit-s">kWh/a</span></label>
+          <input type="number" class="inp-A" id="A-j-ev" placeholder="0" step="100" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Strom WP/KM <span class="unit-s">kWh/a</span></label>
+          <input type="number" class="inp-A" id="A-j-ewp" placeholder="0" step="100" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Wärmebedarf <span class="unit-s">kWh/a</span></label>
+          <input type="number" class="inp-A" id="A-j-qh" placeholder="0" step="100" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Kältebedarf <span class="unit-s">kWh/a</span></label>
+          <input type="number" class="inp-A" id="A-j-qc" placeholder="0" step="100" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Gesamtenergie <span class="unit-s">kWh/a</span></label>
+          <input type="number" class="inp-A" id="A-j-etot" placeholder="0" step="100" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Energiekosten <span class="unit-s">€/a</span></label>
+          <input type="number" class="inp-A" id="A-j-cost" placeholder="0" step="10" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field">
+        <label>Vollbenutzungsstunden <span class="unit-s">h/a</span></label>
+        <input type="number" class="inp-A" id="A-j-vbh" placeholder="2000" step="100" min="0" inputmode="decimal" oninput="onVarChange()">
+      </div>
+    </div>
+
+    <!-- Übergang -->
+    <div class="bz-panel card card-white" id="A-panel-uebergang" style="display:none">
+      <div class="sec-hd" style="margin-top:0">🌿 Übergangsbetrieb</div>
+      <div class="field-row">
+        <div class="field"><label>Außentemp. <span class="unit-s">°C</span></label>
+          <input type="number" class="inp-A" id="A-u-tout" placeholder="12" step="0.5" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Ventilator-P <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-A" id="A-u-pv" placeholder="0" step="0.01" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Heizleistung <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-A" id="A-u-qh" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Kälteleistung <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-A" id="A-u-qc" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:6px">
+      <label style="font-size:12px;font-weight:600">Notizen / Quellen</label>
+      <textarea id="A-notes" class="inp-A" placeholder="Datenblatt-Referenz, Anmerkungen..."></textarea>
+    </div>
+  </div>
+  <div class="page-footer"><a href="https://www.mm-rlt.de" target="_blank">www.mm-rlt.de</a></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SEITE 3: VARIANTE B
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-varB">
+  <div id="varB-content">
+    <div class="card card-B">
+      <span class="badge badge-B">Variante B – Eigenentwurf / Alternative</span>
+      <div class="field">
+        <label>Bezeichnung / Gerätename</label>
+        <input type="text" class="inp-B" id="B-name" placeholder="z.B. Eigenentwurf WRG-Anlage" oninput="onVarChange()">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Luftvolumenstrom <span class="unit-s">m³/h</span></label>
+          <input type="number" class="inp-B" id="B-v" value="" step="100" min="0" inputmode="decimal" oninput="onVarChange()">
+        </div>
+        <div class="field">
+          <label>WRG η_T <span class="unit-s">%</span></label>
+          <input type="number" class="inp-B" id="B-eta" value="" step="1" min="0" max="100" inputmode="decimal" oninput="onVarChange()">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>SFP-Wert <span class="unit-s">W/(m³/h)</span></label>
+          <input type="number" class="inp-B" id="B-sfp" value="" step="0.01" min="0" inputmode="decimal" oninput="onVarChange()">
+        </div>
+        <div class="field">
+          <label>Druckverlust ges. <span class="unit-s">Pa</span></label>
+          <input type="number" class="inp-B" id="B-dp" value="" step="10" min="0" inputmode="decimal" oninput="onVarChange()">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Schallleistung <span class="unit-s">dB(A)</span></label>
+          <input type="number" class="inp-B" id="B-lw" value="" step="1" min="0" inputmode="decimal" oninput="onVarChange()">
+        </div>
+        <div class="field">
+          <label>Filterklasse</label>
+          <input type="text" class="inp-B" id="B-filter" placeholder="z.B. ePM1 70%" oninput="onVarChange()">
+        </div>
+      </div>
+    </div>
+
+    <div class="bz-tabs">
+      <button class="bz-tab active" onclick="setBzTab('B','winter',this)">❄ Winter</button>
+      <button class="bz-tab" onclick="setBzTab('B','sommer',this)">☀ Sommer</button>
+      <button class="bz-tab" onclick="setBzTab('B','jahres',this)">📅 Jahresmittel</button>
+      <button class="bz-tab" onclick="setBzTab('B','uebergang',this)">🌿 Übergang</button>
+    </div>
+
+    <div class="bz-panel card card-white" id="B-panel-winter">
+      <div class="sec-hd" style="margin-top:0">❄ Winterauslegung</div>
+      <div class="field-row">
+        <div class="field"><label>Außentemp. <span class="unit-s">°C</span></label>
+          <input type="number" class="inp-B" id="B-w-tout" placeholder="-12" step="0.5" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Zulufttemp. <span class="unit-s">°C</span></label>
+          <input type="number" class="inp-B" id="B-w-tzul" placeholder="20" step="0.5" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Heizleistung <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-B" id="B-w-qh" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Ventilator-P <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-B" id="B-w-pv" placeholder="0" step="0.01" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>WP-Strom <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-B" id="B-w-pwp" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>COP Heizung</label>
+          <input type="number" class="inp-B" id="B-w-cop" placeholder="—" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+    </div>
+
+    <div class="bz-panel card card-white" id="B-panel-sommer" style="display:none">
+      <div class="sec-hd" style="margin-top:0">☀ Sommerauslegung</div>
+      <div class="field-row">
+        <div class="field"><label>Außentemp. <span class="unit-s">°C</span></label>
+          <input type="number" class="inp-B" id="B-s-tout" placeholder="32" step="0.5" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Zulufttemp. <span class="unit-s">°C</span></label>
+          <input type="number" class="inp-B" id="B-s-tzul" placeholder="22" step="0.5" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Kälteleistung <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-B" id="B-s-qc" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Ventilator-P <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-B" id="B-s-pv" placeholder="0" step="0.01" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>KM-Strom <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-B" id="B-s-pkm" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>EER Kältemasch.</label>
+          <input type="number" class="inp-B" id="B-s-eer" placeholder="—" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+    </div>
+
+    <div class="bz-panel card card-white" id="B-panel-jahres" style="display:none">
+      <div class="sec-hd" style="margin-top:0">📅 Jahresmittelbetrieb</div>
+      <div class="field-row">
+        <div class="field"><label>Strom Ventilatoren <span class="unit-s">kWh/a</span></label>
+          <input type="number" class="inp-B" id="B-j-ev" placeholder="0" step="100" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Strom WP/KM <span class="unit-s">kWh/a</span></label>
+          <input type="number" class="inp-B" id="B-j-ewp" placeholder="0" step="100" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Wärmebedarf <span class="unit-s">kWh/a</span></label>
+          <input type="number" class="inp-B" id="B-j-qh" placeholder="0" step="100" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Kältebedarf <span class="unit-s">kWh/a</span></label>
+          <input type="number" class="inp-B" id="B-j-qc" placeholder="0" step="100" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Gesamtenergie <span class="unit-s">kWh/a</span></label>
+          <input type="number" class="inp-B" id="B-j-etot" placeholder="0" step="100" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Energiekosten <span class="unit-s">€/a</span></label>
+          <input type="number" class="inp-B" id="B-j-cost" placeholder="0" step="10" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field">
+        <label>Vollbenutzungsstunden <span class="unit-s">h/a</span></label>
+        <input type="number" class="inp-B" id="B-j-vbh" placeholder="2000" step="100" min="0" inputmode="decimal" oninput="onVarChange()">
+      </div>
+    </div>
+
+    <div class="bz-panel card card-white" id="B-panel-uebergang" style="display:none">
+      <div class="sec-hd" style="margin-top:0">🌿 Übergangsbetrieb</div>
+      <div class="field-row">
+        <div class="field"><label>Außentemp. <span class="unit-s">°C</span></label>
+          <input type="number" class="inp-B" id="B-u-tout" placeholder="12" step="0.5" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Ventilator-P <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-B" id="B-u-pv" placeholder="0" step="0.01" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Heizleistung <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-B" id="B-u-qh" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+        <div class="field"><label>Kälteleistung <span class="unit-s">kW</span></label>
+          <input type="number" class="inp-B" id="B-u-qc" placeholder="0" step="0.1" min="0" inputmode="decimal" oninput="onVarChange()"></div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:6px">
+      <label style="font-size:12px;font-weight:600">Notizen / Quellen</label>
+      <textarea id="B-notes" class="inp-B" placeholder="Eigenentwurf, Annahmen, Berechnungsgrundlage..."></textarea>
+    </div>
+  </div>
+  <div class="page-footer"><a href="https://www.mm-rlt.de" target="_blank">www.mm-rlt.de</a></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SEITE 4: VERGLEICH
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-vergleich">
+  <div id="vgl-placeholder" class="placeholder">
+    Bitte Variante A und B ausfüllen,<br>dann wird der Vergleich hier angezeigt.
+  </div>
+  <div id="vgl-content" style="display:none">
+
+    <!-- Header Vergleich -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div class="card card-A" style="padding:10px;margin-bottom:0">
+        <div style="font-size:10px;font-weight:700;color:#1a3a6e;margin-bottom:3px">VARIANTE A</div>
+        <div style="font-size:13px;font-weight:700" id="vgl-name-A">—</div>
+      </div>
+      <div class="card card-B" style="padding:10px;margin-bottom:0">
+        <div style="font-size:10px;font-weight:700;color:#3a1a6e;margin-bottom:3px">VARIANTE B</div>
+        <div style="font-size:13px;font-weight:700" id="vgl-name-B">—</div>
+      </div>
+    </div>
+
+    <!-- Betriebszustand auswählen -->
+    <div class="bz-tabs">
+      <button class="bz-tab active" onclick="setVglBz('winter',this)">❄ Winter</button>
+      <button class="bz-tab" onclick="setVglBz('sommer',this)">☀ Sommer</button>
+      <button class="bz-tab" onclick="setVglBz('jahres',this)">📅 Jahresmittel</button>
+      <button class="bz-tab" onclick="setVglBz('uebergang',this)">🌿 Übergang</button>
+    </div>
+
+    <!-- Gerätekennwerte -->
+    <div class="sec-hd">Gerätekennwerte</div>
+    <table class="vgl-table" id="vgl-kennwerte">
+      <thead><tr><th style="text-align:left">Kennwert</th><th class="th-A">A</th><th class="th-B">B</th></tr></thead>
+      <tbody>
+        <tr><td>Luftvolumenstrom m³/h</td><td id="vk-v-A">—</td><td id="vk-v-B">—</td></tr>
+        <tr><td>WRG η_T %</td><td id="vk-eta-A">—</td><td id="vk-eta-B">—</td></tr>
+        <tr><td>SFP W/(m³/h)</td><td id="vk-sfp-A">—</td><td id="vk-sfp-B">—</td></tr>
+        <tr><td>Druckverlust Pa</td><td id="vk-dp-A">—</td><td id="vk-dp-B">—</td></tr>
+        <tr><td>Schallleistung dB(A)</td><td id="vk-lw-A">—</td><td id="vk-lw-B">—</td></tr>
+        <tr><td>Filterklasse</td><td id="vk-flt-A">—</td><td id="vk-flt-B">—</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Betriebswerte je Zustand -->
+    <div class="sec-hd" id="vgl-bz-hd">❄ Winterauslegung – Vergleich</div>
+    <table class="vgl-table" id="vgl-bz-table">
+      <thead><tr><th style="text-align:left">Wert</th><th class="th-A">A</th><th class="th-B">B</th></tr></thead>
+      <tbody id="vgl-bz-body"></tbody>
+    </table>
+
+    <!-- Balkengrafik -->
+    <div class="sec-hd">Visualisierung</div>
+    <div id="vgl-bars"></div>
+
+    <!-- Einsparung B vs A -->
+    <div class="savings-box" id="vgl-savings" style="display:none">
+      <div class="sv-title">💡 Einsparung Variante B gegenüber A</div>
+      <div class="savings-grid" id="vgl-savings-grid"></div>
+    </div>
+
+    <!-- Bewertung -->
+    <div class="card card-result" id="vgl-bewertung" style="display:none">
+      <div class="sec-hd" style="margin-top:0">KI-Bewertung</div>
+      <div id="vgl-bewertung-text" style="font-size:12px;line-height:1.7;color:var(--text2)"></div>
+      <button class="btn-secondary" style="margin-top:8px" onclick="generateBewertung()">
+        <span id="bew-spinner" class="spinner" style="display:none"></span>
+        KI-Vergleich generieren ›
+      </button>
+    </div>
+
+  </div>
+  <div class="page-footer"><a href="https://www.mm-rlt.de" target="_blank">www.mm-rlt.de</a></div>
+</div>
+
+</div><!-- page-wrap -->
+</div><!-- app -->
+
+<!-- Lade-Overlay (erscheint während KI-Analyse) -->
+<div class="loading-overlay" id="loading-overlay" style="display:none">
+  <div class="lo-card">
+    <div class="big-spinner"></div>
+    <div class="lo-title">KI analysiert Datenblatt…</div>
+    <div class="lo-sub" id="lo-status">Bild wird übertragen</div>
+    <div class="lo-steps">
+      <div id="lo-s1">① Bild an Claude senden</div>
+      <div id="lo-s2">② Kennwerte erkennen</div>
+      <div id="lo-s3">③ Ergebnis aufbereiten</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Zustand ──────────────────────────────────────────────────────────────────
+let scanZiel='A';
+let currentBzA='winter', currentBzB='winter', currentVglBz='winter';
+let imageBase64=null, imageMime=null;
+let lastAiData=null;
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function showPage(p,btn){
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(p==='vergleich') renderVergleich();
+}
+
+// ── API-Key ───────────────────────────────────────────────────────────────────
+function saveApiKey(){
+  try{localStorage.setItem('mm_api_key',document.getElementById('api-key').value);}catch(e){}
+}
+function loadApiKey(){
+  try{const k=localStorage.getItem('mm_api_key');if(k)document.getElementById('api-key').value=k;}catch(e){}
+}
+
+// ── Scan-Ziel ─────────────────────────────────────────────────────────────────
+function setScanZiel(z,btn){
+  scanZiel=z;
+  document.getElementById('scan-ziel-A').classList.toggle('active',z==='A');
+  document.getElementById('scan-ziel-B').classList.toggle('active',z==='B');
+  document.getElementById('apply-ziel-lbl').textContent=z;
+}
+
+// ── Betriebszustand-Tabs ──────────────────────────────────────────────────────
+function setBzTab(v,bz,btn){
+  const panels=document.querySelectorAll('#page-var'+v+' .bz-panel');
+  panels.forEach(p=>p.style.display='none');
+  document.getElementById(v+'-panel-'+bz).style.display='';
+  const btns=btn.closest('.bz-tabs').querySelectorAll('.bz-tab');
+  btns.forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(v==='A') currentBzA=bz; else currentBzB=bz;
+}
+function setVglBz(bz,btn){
+  currentVglBz=bz;
+  document.querySelectorAll('#page-vergleich .bz-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderVergleich();
+}
+
+// ── Datei-Upload ──────────────────────────────────────────────────────────────
+function handleFileSelect(e){const f=e.target.files[0];if(f)loadFile(f);}
+function handleDrop(e){e.preventDefault();document.getElementById('upload-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)loadFile(f);}
+
+// PDF.js Worker konfigurieren
+if(typeof pdfjsLib!=='undefined'){
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+let pdfDoc=null, pdfCurrentPage=1;
+
+async function loadFile(file){
+  clearScan();
+  document.getElementById('scan-error').style.display='none';
+
+  if(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf')){
+    // PDF-Pfad: PDF.js verwenden
+    await loadPdf(file);
+  } else {
+    // Bild-Pfad: direkt als DataURL laden
+    loadImage(file);
+  }
+}
+
+function loadImage(file){
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const result=ev.target.result;
+    imageBase64=result.split(',')[1];
+    imageMime=file.type||'image/jpeg';
+    const prev=document.getElementById('upload-preview');
+    prev.src=result;
+    prev.style.display='block';
+    document.getElementById('pdf-nav').style.display='none';
+    document.getElementById('scan-actions').style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function loadPdf(file){
+  if(typeof pdfjsLib==='undefined'){
+    showScanError('PDF-Unterstützung nicht verfügbar. Bitte einen Screenshot oder ein Foto der PDF-Seite hochladen.');
+    return;
+  }
+
+  const loadingEl=document.getElementById('upload-zone');
+  loadingEl.querySelector('.lbl').textContent='PDF wird geladen…';
+
+  try{
+    const arrayBuffer=await file.arrayBuffer();
+    pdfDoc=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+    pdfCurrentPage=1;
+    document.getElementById('pdf-page-total').textContent=pdfDoc.numPages;
+    document.getElementById('pdf-page-cur').textContent=1;
+    document.getElementById('pdf-nav').style.display=pdfDoc.numPages>1?'block':'none';
+    await renderPdfPage(pdfCurrentPage);
+    document.getElementById('scan-actions').style.display='block';
+  }catch(err){
+    showScanError('PDF konnte nicht geladen werden: '+err.message+'. Bitte einen Screenshot der relevanten Seite hochladen.');
+  }finally{
+    loadingEl.querySelector('.lbl').textContent='Datenblatt / Leistungsverzeichnis';
+  }
+}
+
+async function renderPdfPage(pageNum){
+  if(!pdfDoc)return;
+  const page=await pdfDoc.getPage(pageNum);
+  // Skalierung: Zielbreite 900px für gute OCR-Qualität
+  const desiredWidth=900;
+  const viewport=page.getViewport({scale:1});
+  const scale=desiredWidth/viewport.width;
+  const scaledVP=page.getViewport({scale});
+
+  const canvas=document.createElement('canvas');
+  canvas.width=scaledVP.width;
+  canvas.height=scaledVP.height;
+  const ctx=canvas.getContext('2d');
+  await page.render({canvasContext:ctx,viewport:scaledVP}).promise;
+
+  // Als JPEG exportieren (gut für KI-Analyse, kleinere Dateigröße)
+  const dataUrl=canvas.toDataURL('image/jpeg',0.92);
+  imageBase64=dataUrl.split(',')[1];
+  imageMime='image/jpeg';
+
+  const prev=document.getElementById('upload-preview');
+  prev.src=dataUrl;
+  prev.style.display='block';
+  document.getElementById('pdf-page-cur').textContent=pageNum;
+}
+
+async function pdfChangePage(delta){
+  if(!pdfDoc)return;
+  const newPage=pdfCurrentPage+delta;
+  if(newPage<1||newPage>pdfDoc.numPages)return;
+  pdfCurrentPage=newPage;
+  await renderPdfPage(pdfCurrentPage);
+}
+
+function clearScan(){
+  imageBase64=null; imageMime=null;
+  pdfDoc=null; pdfCurrentPage=1;
+  document.getElementById('upload-preview').style.display='none';
+  document.getElementById('pdf-nav').style.display='none';
+  document.getElementById('scan-actions').style.display='none';
+  document.getElementById('ai-result-wrap').style.display='none';
+  document.getElementById('file-input').value='';
+  document.getElementById('scan-error').style.display='none';
+}
+
+// ── Lade-Overlay ──────────────────────────────────────────────────────────────
+function showOverlay(step,status){
+  document.getElementById('loading-overlay').style.display='flex';
+  document.getElementById('lo-status').textContent=status||'';
+  ['lo-s1','lo-s2','lo-s3'].forEach((id,i)=>document.getElementById(id).className=i+1===step?'lo-active':'');
+}
+function hideOverlay(){document.getElementById('loading-overlay').style.display='none';}
+
+// ── KI-Analyse ────────────────────────────────────────────────────────────────
+async function analyzeImage(){
+  if(!imageBase64){showScanError('Kein Bild geladen.');return;}
+  const apiKey=document.getElementById('api-key').value.trim();
+  if(!apiKey){showScanError('Bitte zuerst den Anthropic API-Key eingeben.');return;}
+
+  // UI: Analyse läuft
+  document.getElementById('scan-error').style.display='none';
+  document.getElementById('ai-result-wrap').style.display='none';
+  const btn=document.getElementById('ai-spinner').closest('button');
+  btn.disabled=true;
+  showOverlay(1,'Bild wird vorbereitet…');
+
+  const systemPrompt=`Du bist ein Experte für raumlufttechnische Anlagen (RLT). Analysiere das Bild eines Datenblatts oder Leistungsverzeichnisses und extrahiere alle relevanten Kennwerte. 
+
+Gib die Daten AUSSCHLIESSLICH als valides JSON zurück, ohne Markdown-Backticks, ohne Kommentare, ohne Erklärungstext. Nur reines JSON.
+
+Schema (verwende null für nicht gefundene Werte):
+{
+  "geraet": "Gerätebezeichnung oder Typ",
+  "hersteller": "Hersteller",
+  "volumenstrom_m3h": null,
+  "wrg_eta_t_pct": null,
+  "wrg_eta_x_pct": null,
+  "sfp_W_m3h": null,
+  "druckverlust_pa": null,
+  "schallleistung_dba": null,
+  "filterklasse": null,
+  "winter": {
+    "aussentemp_c": null,
+    "zulufttemp_c": null,
+    "heizleistung_kw": null,
+    "ventilator_kw": null,
+    "wp_strom_kw": null,
+    "cop": null
+  },
+  "sommer": {
+    "aussentemp_c": null,
+    "zulufttemp_c": null,
+    "kaelteleistung_kw": null,
+    "ventilator_kw": null,
+    "km_strom_kw": null,
+    "eer": null
+  },
+  "jahres": {
+    "strom_ventilatoren_kwha": null,
+    "strom_wp_km_kwha": null,
+    "waermebedarf_kwha": null,
+    "kaeltebedarf_kwha": null,
+    "gesamt_kwha": null,
+    "kosten_euro_a": null,
+    "vollbenutzungsstunden_ha": null
+  },
+  "uebergang": {
+    "aussentemp_c": null,
+    "ventilator_kw": null,
+    "heizleistung_kw": null,
+    "kaelteleistung_kw": null
+  },
+  "notizen": "Kurze Zusammenfassung was gefunden wurde"
+}`;
+
+  try{
+    showOverlay(1,'Verbindung zu Anthropic wird hergestellt…');
+
+    // Kurze Pause damit der Browser das Overlay rendert
+    await new Promise(r=>setTimeout(r,50));
+
+    const payload={
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1500,
+      system:systemPrompt,
+      messages:[{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:imageMime,data:imageBase64}},
+        {type:'text',text:'Bitte analysiere dieses Datenblatt / Leistungsverzeichnis und extrahiere alle RLT-Kennwerte als JSON.'}
+      ]}]
+    };
+
+    showOverlay(2,'Claude analysiert das Datenblatt… (10–30 Sekunden)');
+
+    let response;
+    try{
+      response=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'x-api-key':apiKey,
+          'anthropic-version':'2023-06-01',
+          'anthropic-dangerous-direct-browser-access':'true'
+        },
+        body:JSON.stringify(payload)
+      });
+    }catch(fetchErr){
+      // CORS-Diagnose
+      const isFile=location.protocol==='file:';
+      if(isFile){
+        hideOverlay();
+        btn.disabled=false;
+        showScanError('⚠ Lokale Datei erkannt: Bitte start.bat (Windows) oder start.command (Mac) doppelklicken – dann klappt die Analyse.');
+        document.getElementById('local-server-hint').style.display='block';
+        return;
+      }
+      throw fetchErr;
+    }
+
+    if(!response.ok){
+      const err=await response.json().catch(()=>({error:{message:'Unbekannter Fehler'}}));
+      const msg=err.error?.message||'';
+      if(response.status===401) throw new Error('API-Key ungültig oder abgelaufen. Bitte prüfen.');
+      if(response.status===429) throw new Error('Rate-Limit erreicht. Bitte kurz warten.');
+      if(response.status===413) throw new Error('Bild zu groß. Bitte kleinere Auflösung verwenden.');
+      throw new Error('API-Fehler '+response.status+(msg?': '+msg:''));
+    }
+
+    showOverlay(3,'Ergebnis wird aufbereitet…');
+    const data=await response.json();
+    const text=data.content?.find(c=>c.type==='text')?.text||'';
+
+    // JSON parsen
+    let parsed;
+    try{
+      const clean=text.replace(/```json[\s\S]*?```/g,m=>m.slice(7,-3)).replace(/```/g,'').trim();
+      parsed=JSON.parse(clean);
+    }catch(e){
+      // Fallback: rohen Text anzeigen
+      hideOverlay();
+      btn.disabled=false;
+      document.getElementById('ai-result-text').textContent=text||'Keine verwertbare Antwort erhalten.';
+      document.getElementById('ai-result-wrap').style.display='block';
+      return;
+    }
+
+    lastAiData=parsed;
+
+    // Lesbare Zusammenfassung
+    const lines=[];
+    if(parsed.hersteller) lines.push('Hersteller: '+parsed.hersteller);
+    if(parsed.geraet) lines.push('Gerät: '+parsed.geraet);
+    if(parsed.volumenstrom_m3h!=null) lines.push('Volumenstrom: '+parsed.volumenstrom_m3h+' m³/h');
+    if(parsed.wrg_eta_t_pct!=null) lines.push('WRG η_T: '+parsed.wrg_eta_t_pct+' %');
+    if(parsed.wrg_eta_x_pct!=null) lines.push('FRG η_x: '+parsed.wrg_eta_x_pct+' %');
+    if(parsed.sfp_W_m3h!=null) lines.push('SFP: '+parsed.sfp_W_m3h+' W/(m³/h)');
+    if(parsed.druckverlust_pa!=null) lines.push('Druckverlust: '+parsed.druckverlust_pa+' Pa');
+    if(parsed.schallleistung_dba!=null) lines.push('Schallleistung: '+parsed.schallleistung_dba+' dB(A)');
+    if(parsed.filterklasse) lines.push('Filterklasse: '+parsed.filterklasse);
+    if(parsed.winter?.heizleistung_kw!=null) lines.push('Heizleistung (Winter): '+parsed.winter.heizleistung_kw+' kW');
+    if(parsed.winter?.ventilator_kw!=null) lines.push('Ventilator (Winter): '+parsed.winter.ventilator_kw+' kW');
+    if(parsed.sommer?.kaelteleistung_kw!=null) lines.push('Kälteleistung (Sommer): '+parsed.sommer.kaelteleistung_kw+' kW');
+    if(parsed.jahres?.gesamt_kwha!=null) lines.push('Jahresenergie: '+parsed.jahres.gesamt_kwha+' kWh/a');
+    if(parsed.jahres?.kosten_euro_a!=null) lines.push('Energiekosten: '+parsed.jahres.kosten_euro_a+' €/a');
+    if(parsed.notizen) lines.push('\n📝 '+parsed.notizen);
+
+    hideOverlay();
+    document.getElementById('ai-result-text').textContent=lines.join('\n')||'Keine Kennwerte auf dieser Seite gefunden.\nBitte andere Seite auswählen.';
+    document.getElementById('ai-result-wrap').style.display='block';
+
+  }catch(err){
+    hideOverlay();
+    showScanError('Fehler: '+err.message);
+  }
+  btn.disabled=false;
+}
+
+// ── KI-Ergebnis übernehmen ────────────────────────────────────────────────────
+function applyAiResult(){
+  if(!lastAiData) return;
+  const d=lastAiData;
+  const v=scanZiel;
+  const setV=(id,val)=>{if(val!=null){const el=document.getElementById(id);if(el)el.value=val;}};
+
+  const name=(d.hersteller&&d.geraet)?d.hersteller+' '+d.geraet:(d.geraet||d.hersteller||'');
+  setV(v+'-name',name);
+  setV(v+'-v',d.volumenstrom_m3h);
+  setV(v+'-eta',d.wrg_eta_t_pct);
+  setV(v+'-sfp',d.sfp_W_m3h);
+  setV(v+'-dp',d.druckverlust_pa);
+  setV(v+'-lw',d.schallleistung_dba);
+  setV(v+'-filter',d.filterklasse);
+
+  if(d.winter){
+    setV(v+'-w-tout',d.winter.aussentemp_c);
+    setV(v+'-w-tzul',d.winter.zulufttemp_c);
+    setV(v+'-w-qh',d.winter.heizleistung_kw);
+    setV(v+'-w-pv',d.winter.ventilator_kw);
+    setV(v+'-w-pwp',d.winter.wp_strom_kw);
+    setV(v+'-w-cop',d.winter.cop);
+  }
+  if(d.sommer){
+    setV(v+'-s-tout',d.sommer.aussentemp_c);
+    setV(v+'-s-tzul',d.sommer.zulufttemp_c);
+    setV(v+'-s-qc',d.sommer.kaelteleistung_kw);
+    setV(v+'-s-pv',d.sommer.ventilator_kw);
+    setV(v+'-s-pkm',d.sommer.km_strom_kw);
+    setV(v+'-s-eer',d.sommer.eer);
+  }
+  if(d.jahres){
+    setV(v+'-j-ev',d.jahres.strom_ventilatoren_kwha);
+    setV(v+'-j-ewp',d.jahres.strom_wp_km_kwha);
+    setV(v+'-j-qh',d.jahres.waermebedarf_kwha);
+    setV(v+'-j-qc',d.jahres.kaeltebedarf_kwha);
+    setV(v+'-j-etot',d.jahres.gesamt_kwha);
+    setV(v+'-j-cost',d.jahres.kosten_euro_a);
+    setV(v+'-j-vbh',d.jahres.vollbenutzungsstunden_ha);
+  }
+  if(d.uebergang){
+    setV(v+'-u-tout',d.uebergang.aussentemp_c);
+    setV(v+'-u-pv',d.uebergang.ventilator_kw);
+    setV(v+'-u-qh',d.uebergang.heizleistung_kw);
+    setV(v+'-u-qc',d.uebergang.kaelteleistung_kw);
+  }
+  if(d.notizen) setV(v+'-notes',d.notizen);
+
+  onVarChange();
+  document.getElementById('ai-result-wrap').style.display='none';
+  // Zu Variante navigieren
+  showPage('var'+v, document.querySelectorAll('.nav-tab')[v==='A'?1:2]);
+}
+
+function showScanError(msg){
+  const e=document.getElementById('scan-error');e.textContent=msg;e.style.display='block';
+}
+
+// ── Live-Update Vergleich ─────────────────────────────────────────────────────
+function onVarChange(){
+  // Vergleich aktualisieren wenn sichtbar
+  if(document.getElementById('page-vergleich').classList.contains('active')) renderVergleich();
+}
+
+// ── Hilfsfunktionen ───────────────────────────────────────────────────────────
+function gv(id){const el=document.getElementById(id);if(!el)return null;const v=parseFloat(el.value);return isNaN(v)?null:v;}
+function gs(id){const el=document.getElementById(id);if(!el)return '';return el.value.trim();}
+function fmtN(v,d=1,unit=''){return v!=null?v.toFixed(d)+(unit?' '+unit:''):'—';}
+
+function cmpCell(elId,vA,vB,lowerIsBetter=true){
+  const elA=document.getElementById(elId+'-A');
+  const elB=document.getElementById(elId+'-B');
+  if(!elA||!elB)return;
+  if(vA==null&&vB==null){elA.textContent='—';elB.textContent='—';return;}
+  // Bestimme wer besser ist
+  if(vA!=null&&vB!=null){
+    const aBetter=lowerIsBetter?(vA<vB):(vA>vB);
+    elA.className=aBetter?'cell-better':'cell-worse';
+    elB.className=aBetter?'cell-worse':'cell-better';
+  }
+}
+
+// ── Vergleich rendern ─────────────────────────────────────────────────────────
+function renderVergleich(){
+  const nameA=gs('A-name')||'Variante A';
+  const nameB=gs('B-name')||'Variante B';
+  document.getElementById('vgl-name-A').textContent=nameA;
+  document.getElementById('vgl-name-B').textContent=nameB;
+
+  // Kennwerte
+  const vA=gv('A-v'),vB=gv('B-v');
+  const etaA=gv('A-eta'),etaB=gv('B-eta');
+  const sfpA=gv('A-sfp'),sfpB=gv('B-sfp');
+  const dpA=gv('A-dp'),dpB=gv('B-dp');
+  const lwA=gv('A-lw'),lwB=gv('B-lw');
+  const fltA=gs('A-filter'),fltB=gs('B-filter');
+
+  document.getElementById('vk-v-A').textContent=fmtN(vA,0,'m³/h');
+  document.getElementById('vk-v-B').textContent=fmtN(vB,0,'m³/h');
+  document.getElementById('vk-eta-A').textContent=fmtN(etaA,0,'%');
+  document.getElementById('vk-eta-B').textContent=fmtN(etaB,0,'%');
+  document.getElementById('vk-sfp-A').textContent=fmtN(sfpA,2);
+  document.getElementById('vk-sfp-B').textContent=fmtN(sfpB,2);
+  document.getElementById('vk-dp-A').textContent=fmtN(dpA,0,'Pa');
+  document.getElementById('vk-dp-B').textContent=fmtN(dpB,0,'Pa');
+  document.getElementById('vk-lw-A').textContent=fmtN(lwA,0,'dB(A)');
+  document.getElementById('vk-lw-B').textContent=fmtN(lwB,0,'dB(A)');
+  document.getElementById('vk-flt-A').textContent=fltA||'—';
+  document.getElementById('vk-flt-B').textContent=fltB||'—';
+
+  // Farbliche Bewertung (niedriger = besser außer η)
+  const setRowColor=(idA,idB,vA,vB,lowerBetter)=>{
+    [idA,idB].forEach(id=>document.getElementById(id).className='');
+    if(vA==null||vB==null||vA===vB)return;
+    const aBetter=lowerBetter?(vA<vB):(vA>vB);
+    document.getElementById(idA).className=aBetter?'cell-better':'cell-worse';
+    document.getElementById(idB).className=aBetter?'cell-worse':'cell-better';
+  };
+  setRowColor('vk-eta-A','vk-eta-B',etaA,etaB,false);
+  setRowColor('vk-sfp-A','vk-sfp-B',sfpA,sfpB,true);
+  setRowColor('vk-dp-A','vk-dp-B',dpA,dpB,true);
+  setRowColor('vk-lw-A','vk-lw-B',lwA,lwB,true);
+
+  // Betriebszustand
+  const bz=currentVglBz;
+  const bzNames={winter:'❄ Winterauslegung',sommer:'☀ Sommerauslegung',jahres:'📅 Jahresmittelbetrieb',uebergang:'🌿 Übergangsbetrieb'};
+  document.getElementById('vgl-bz-hd').textContent=bzNames[bz]+' – Vergleich';
+
+  const rows=[];
+  const savings=[];
+  const barData=[];
+
+  if(bz==='winter'){
+    const r=(lbl,idS,unit,d,low)=>{
+      const a=gv('A-w-'+idS),b=gv('B-w-'+idS);
+      rows.push({lbl,a,b,unit,d,low});
+      if(a!=null&&b!=null&&a!==0)barData.push({lbl,a,b,unit,low});
+      if(a!=null&&b!=null&&low&&b<a)savings.push({lbl,save:a-b,unit,pct:(a-b)/a*100});
+    };
+    r('Außentemp.','tout','°C',1,false);
+    r('Zulufttemp.','tzul','°C',1,false);
+    r('Heizleistung','qh','kW',1,true);
+    r('Ventilator-P','pv','kW',2,true);
+    r('WP-Strom','pwp','kW',1,true);
+    r('COP','cop','',2,false);
+  } else if(bz==='sommer'){
+    const r=(lbl,idS,unit,d,low)=>{
+      const a=gv('A-s-'+idS),b=gv('B-s-'+idS);
+      rows.push({lbl,a,b,unit,d,low});
+      if(a!=null&&b!=null&&a!==0)barData.push({lbl,a,b,unit,low});
+      if(a!=null&&b!=null&&low&&b<a)savings.push({lbl,save:a-b,unit,pct:(a-b)/a*100});
+    };
+    r('Außentemp.','tout','°C',1,false);
+    r('Zulufttemp.','tzul','°C',1,false);
+    r('Kälteleistung','qc','kW',1,true);
+    r('Ventilator-P','pv','kW',2,true);
+    r('KM-Strom','pkm','kW',1,true);
+    r('EER','eer','',2,false);
+  } else if(bz==='jahres'){
+    const r=(lbl,idS,unit,d,low)=>{
+      const a=gv('A-j-'+idS),b=gv('B-j-'+idS);
+      rows.push({lbl,a,b,unit,d,low});
+      if(a!=null&&b!=null&&a!==0)barData.push({lbl,a,b,unit,low});
+      if(a!=null&&b!=null&&low&&b<a)savings.push({lbl,save:a-b,unit,pct:(a-b)/a*100});
+    };
+    r('Strom Ventilatoren','ev','kWh/a',0,true);
+    r('Strom WP/KM','ewp','kWh/a',0,true);
+    r('Wärmebedarf','qh','kWh/a',0,true);
+    r('Kältebedarf','qc','kWh/a',0,true);
+    r('Gesamtenergie','etot','kWh/a',0,true);
+    r('Energiekosten','cost','€/a',0,true);
+    r('VBH','vbh','h/a',0,false);
+  } else if(bz==='uebergang'){
+    const r=(lbl,idS,unit,d,low)=>{
+      const a=gv('A-u-'+idS),b=gv('B-u-'+idS);
+      rows.push({lbl,a,b,unit,d,low});
+      if(a!=null&&b!=null&&a!==0)barData.push({lbl,a,b,unit,low});
+      if(a!=null&&b!=null&&low&&b<a)savings.push({lbl,save:a-b,unit,pct:(a-b)/a*100});
+    };
+    r('Außentemp.','tout','°C',1,false);
+    r('Ventilator-P','pv','kW',2,true);
+    r('Heizleistung','qh','kW',1,true);
+    r('Kälteleistung','qc','kW',1,true);
+  }
+
+  // Tabelle füllen
+  const tbody=document.getElementById('vgl-bz-body');
+  tbody.innerHTML='';
+  rows.forEach(({lbl,a,b,unit,d,low})=>{
+    const tr=document.createElement('tr');
+    let clA='',clB='';
+    if(a!=null&&b!=null&&a!==b){
+      const aBetter=low?(a<b):(a>b);
+      clA=aBetter?'cell-better':'cell-worse';
+      clB=aBetter?'cell-worse':'cell-better';
+    }
+    tr.innerHTML=`<td>${lbl}</td><td class="${clA}">${a!=null?a.toFixed(d)+(unit?' '+unit:''):'—'}</td><td class="${clB}">${b!=null?b.toFixed(d)+(unit?' '+unit:''):'—'}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // Balkengrafik
+  const barsEl=document.getElementById('vgl-bars');
+  barsEl.innerHTML='';
+  barData.slice(0,6).forEach(({lbl,a,b,unit,low})=>{
+    const max=Math.max(a,b)||1;
+    const pA=Math.round(a/max*100),pB=Math.round(b/max*100);
+    const colA=(!low||a<=b)?'bfA':'bfA'; // A immer blau
+    const colB=(!low||b<=a)?'bfB':'bfB'; // B immer lila
+    barsEl.innerHTML+=`
+      <div style="margin-bottom:8px">
+        <div style="font-size:10px;color:var(--text2);margin-bottom:3px;font-weight:600">${lbl}</div>
+        <div class="bar-cmp"><div class="blbl" style="font-size:9px;color:#1a3a6e">A: ${a.toFixed(1)} ${unit}</div><div class="bwrap"><div class="bfill ${colA}" style="width:${pA}%">${pA>20?'A':''}</div></div></div>
+        <div class="bar-cmp"><div class="blbl" style="font-size:9px;color:#3a1a6e">B: ${b.toFixed(1)} ${unit}</div><div class="bwrap"><div class="bfill ${colB}" style="width:${pB}%">${pB>20?'B':''}</div></div></div>
+      </div>`;
+  });
+
+  // Einsparungen
+  const savBox=document.getElementById('vgl-savings');
+  const savGrid=document.getElementById('vgl-savings-grid');
+  if(savings.length>0){
+    savGrid.innerHTML=savings.map(s=>`
+      <div class="sv-item">
+        <div class="sv-lbl">${s.lbl}</div>
+        <div class="sv-val">−${s.save.toFixed(s.unit.includes('kWh')||s.unit.includes('€')?0:1)} ${s.unit}</div>
+        <div style="font-size:10px;color:#1a7a40">${s.pct.toFixed(0)}% weniger</div>
+      </div>`).join('');
+    savBox.style.display='block';
+  } else {
+    savBox.style.display='none';
+  }
+
+  // Bewertungs-Button immer anzeigen wenn Daten vorhanden
+  const hasData=gv('A-v')!=null||gv('B-v')!=null||gv('A-w-qh')!=null||gv('B-w-qh')!=null;
+  document.getElementById('vgl-bewertung').style.display=hasData?'block':'none';
+
+  // Placeholder / Content umschalten
+  const anyData=nameA!=='Variante A'||nameB!=='Variante B'||hasData;
+  document.getElementById('vgl-placeholder').style.display=anyData?'none':'block';
+  document.getElementById('vgl-content').style.display=anyData?'block':'none';
+}
+
+// ── KI-Bewertung ──────────────────────────────────────────────────────────────
+async function generateBewertung(){
+  const apiKey=document.getElementById('api-key').value.trim();
+  if(!apiKey){alert('Bitte zuerst den API-Key auf der Scan-Seite eingeben.');return;}
+
+  showOverlay(2,'KI-Bewertung wird erstellt…');
+  document.getElementById('vgl-bewertung-text').textContent='';
+
+  const summary=`
+Variante A: ${gs('A-name')||'—'}
+Variante B: ${gs('B-name')||'—'}
+Kennwerte: Volumenstrom A/B: ${gv('A-v')||'—'} / ${gv('B-v')||'—'} m³/h · WRG η_T A/B: ${gv('A-eta')||'—'} / ${gv('B-eta')||'—'} % · SFP A/B: ${gv('A-sfp')||'—'} / ${gv('B-sfp')||'—'} W/(m³/h) · Druckverlust A/B: ${gv('A-dp')||'—'} / ${gv('B-dp')||'—'} Pa · Schallleistung A/B: ${gv('A-lw')||'—'} / ${gv('B-lw')||'—'} dB(A)
+Winter: Heizleistung A/B: ${gv('A-w-qh')||'—'} / ${gv('B-w-qh')||'—'} kW · Ventilatoren A/B: ${gv('A-w-pv')||'—'} / ${gv('B-w-pv')||'—'} kW
+Sommer: Kälteleistung A/B: ${gv('A-s-qc')||'—'} / ${gv('B-s-qc')||'—'} kW
+Jahresenergie A/B: ${gv('A-j-etot')||'—'} / ${gv('B-j-etot')||'—'} kWh/a · Kosten A/B: ${gv('A-j-cost')||'—'} / ${gv('B-j-cost')||'—'} €/a`;
+
+  try{
+    const response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        messages:[{role:'user',content:`Du bist RLT-Ingenieur. Bewerte kurz und prägnant (max. 8 Sätze) die folgenden zwei RLT-Varianten nach EnEV/GEG, ErP-Richtlinie und Wirtschaftlichkeit:\n\n${summary}\n\nGib eine klare Empfehlung und benenne die wichtigsten Unterschiede. Keine Aufzählungspunkte, Fließtext.`}]
+      })
+    });
+    const data=await response.json();
+    const text=data.content?.find(c=>c.type==='text')?.text||'Keine Bewertung erhalten.';
+    document.getElementById('vgl-bewertung-text').textContent=text;
+  }catch(err){
+    document.getElementById('vgl-bewertung-text').textContent='Fehler: '+err.message;
+  }
+  hideOverlay();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.nav-tab').forEach(b=>{b.style.setProperty('color','#ffffff','important');b.style.setProperty('background-color','#1a1aff','important');});
+loadApiKey();
+// Sofort prüfen ob lokale Datei
+if(location.protocol==='file:'){
+  document.getElementById('local-server-hint').style.display='block';
+  document.getElementById('scan-error').style.display='block';
+  document.getElementById('scan-error').textContent='⚠ Lokale Datei: start.bat (Windows) oder start.command (Mac) doppelklicken, dann neu öffnen.';
+}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
